@@ -13,15 +13,20 @@ class GameBoard:
             print(el)
 
     def move_tile(self):
-        if keyboard.is_pressed('left'):
-            print('You Pressed left!')
-        elif keyboard.is_pressed('right'):
-            print('You Pressed right!')
-        elif keyboard.is_pressed('down'):
-            print('You Pressed down!')
-        elif keyboard.is_pressed('up'):
-            print('You Pressed up!')
-        time.sleep(0.1)
+         while True:
+            if keyboard.is_pressed('left'):
+                self.user_input = 'left'
+                break
+            elif keyboard.is_pressed('right'):
+                self.user_input = 'right'
+                break
+            elif keyboard.is_pressed('down'):
+                self.user_input = 'down'
+                break
+            elif keyboard.is_pressed('up'):
+                self.user_input = 'up'
+                break
+            time.sleep(0.1)
 
 
     def merge_tiles(self, tile1, tile2):
@@ -41,6 +46,6 @@ game_board = GameBoard(5)
 while not game_board.is_game_over() and not game_board.is_game_won():
     ### Handle user input and game logic
     game_board.update()
-    while True:
-        game_board.move_tile()
-        
+    #while True:
+    game_board.move_tile()
+    print(game_board.user_input)
