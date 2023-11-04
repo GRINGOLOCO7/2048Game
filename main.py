@@ -73,36 +73,50 @@ class GameBoard:
             #print('element above ', self.grid[row-1][column])
             if self.grid[row-1][column] == 0:
                 self.grid[row][column], self.grid[row-1][column] = 0, val
-            else:
+            else: 
+                #check if need to merge
+                if self.grid[row-1][column] == self.grid[row][column]:
+                    self.grid[row][column], self.grid[row-1][column] = 0, self.grid[row][column]+self.grid[row-1][column] 
+                else:
+                    pass
                 break
             row -= 1
     def move_down(self, val, row, column):
         while row != len(self.grid)-1:
             if self.grid[row+1][column] == 0:
                 self.grid[row][column], self.grid[row+1][column] = 0, val
-            else:
+            else: 
+                #check if need to merge
+                if self.grid[row+1][column] == self.grid[row][column]:
+                    self.grid[row][column], self.grid[row+1][column] = 0, self.grid[row][column]+self.grid[row+1][column] 
+                else:
+                    pass
                 break
             row += 1
     def move_left(self, val, row, column):
         while column != 0:
             if self.grid[row][column-1] == 0:
                 self.grid[row][column], self.grid[row][column-1] = 0, val
-            else:
+            else: 
+                #check if need to merge
+                if self.grid[row][column-1] == self.grid[row][column]:
+                    self.grid[row][column], self.grid[row][column-1] = 0, self.grid[row][column]+self.grid[row][column-1] 
+                else:
+                    pass
                 break
             column -= 1
     def move_right(self, val, row, column):
         while column != len(self.grid[row])-1:
             if self.grid[row][column+1] == 0:
                 self.grid[row][column], self.grid[row][column+1] = 0, val
-            else:
+            else: 
+                #check if need to merge
+                if self.grid[row][column+1] == self.grid[row][column]:
+                    self.grid[row][column], self.grid[row][column+1] = 0, self.grid[row][column]+self.grid[row][column+1] 
+                else:
+                    pass
                 break
             column += 1
-
-
-#########################################################################################
-    def merge_tiles(self, tile1, tile2):
-        # Merge two tiles with the same value
-        pass
 
 #########################################################################################
 
@@ -134,6 +148,8 @@ print("How much do you want ot challeng your-self?")
 print("(Usually the grid is a 4x4)")
 size = int(input("So... what is the size of the grid:\t"))
 game_board = GameBoard(size)
+game_board.spown_new()
+game_board.spown_new()
 
 # Main game loop
 while not game_board.is_game_over() and not game_board.is_game_won():
