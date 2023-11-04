@@ -64,8 +64,17 @@ class GameBoard:
     
 #########################################################################################
 
-    def move_tile(self):
-        pass
+    def move_up(self, val, row, column):
+        while row != 0:
+            #print('row ', row)
+            #print('colum ', column)
+            #print('element above ', self.grid[row-1][column])
+            if self.grid[row-1][column] == 0:
+                self.grid[row][column], self.grid[row-1][column] = 0, val
+            else:
+                break
+            row -= 1
+
 
 #########################################################################################
     def merge_tiles(self, tile1, tile2):
@@ -111,10 +120,17 @@ while not game_board.is_game_over() and not game_board.is_game_won():
 
     # detect desire moovment
     game_board.read_user_input()
-    print(game_board.user_input)
+    #print(game_board.user_input)
+    # move all tiles up
+    if game_board.user_input == 'up':
+        for row in range(len(game_board.grid)):
+            for column in range(len(game_board.grid[row])):
+                game_board.move_up(game_board.grid[row][column], row, column)
 
     # spown new number (2 or 4) in the grid
     game_board.spown_new()
-
+    
+    # pause the loop
     time.sleep(0.5)
+    print('----------------')
 game_board.update()
