@@ -12,8 +12,10 @@ class GameBoard:
 #########################################################################################
     
     def update(self):
-        for el in self.grid:
-            print(el)
+        for row in self.grid:
+            # Use join to add spaces between elements in each row
+            row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
+            print(row_str)
 
 #########################################################################################
     
@@ -60,7 +62,7 @@ class GameBoard:
         #print(self.empty_cells)
 
         # Place the new number in the selected position
-        self.grid[row][column] = number
+        self.grid[row][column] = 1000
     
 #########################################################################################
 
@@ -122,9 +124,9 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     game_board.read_user_input()
     #print(game_board.user_input)
     # move all tiles up
-    if game_board.user_input == 'up':
-        for row in range(len(game_board.grid)):
-            for column in range(len(game_board.grid[row])):
+    for row in range(len(game_board.grid)):
+        for column in range(len(game_board.grid[row])):
+            if game_board.user_input == 'up':
                 game_board.move_up(game_board.grid[row][column], row, column)
 
     # spown new number (2 or 4) in the grid
