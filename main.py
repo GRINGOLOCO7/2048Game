@@ -62,7 +62,7 @@ class GameBoard:
         #print(self.empty_cells)
 
         # Place the new number in the selected position
-        self.grid[row][column] = 1000
+        self.grid[row][column] = number
     
 #########################################################################################
 
@@ -76,6 +76,27 @@ class GameBoard:
             else:
                 break
             row -= 1
+    def move_down(self, val, row, column):
+        while row != len(self.grid)-1:
+            if self.grid[row+1][column] == 0:
+                self.grid[row][column], self.grid[row+1][column] = 0, val
+            else:
+                break
+            row += 1
+    def move_left(self, val, row, column):
+        while column != 0:
+            if self.grid[row][column-1] == 0:
+                self.grid[row][column], self.grid[row][column-1] = 0, val
+            else:
+                break
+            column -= 1
+    def move_right(self, val, row, column):
+        while column != len(self.grid[row])-1:
+            if self.grid[row][column+1] == 0:
+                self.grid[row][column], self.grid[row][column+1] = 0, val
+            else:
+                break
+            column += 1
 
 
 #########################################################################################
@@ -128,6 +149,12 @@ while not game_board.is_game_over() and not game_board.is_game_won():
         for column in range(len(game_board.grid[row])):
             if game_board.user_input == 'up':
                 game_board.move_up(game_board.grid[row][column], row, column)
+            if game_board.user_input == 'down':
+                game_board.move_down(game_board.grid[len(game_board.grid)-1-row][column], len(game_board.grid)-1-row, column)
+            if game_board.user_input == 'left':
+                game_board.move_left(game_board.grid[row][column], row, column)
+            if game_board.user_input == 'right':
+                game_board.move_right(game_board.grid[row][len(game_board.grid[row])-1-column], row, len(game_board.grid[row])-1-column)
 
     # spown new number (2 or 4) in the grid
     game_board.spown_new()
