@@ -3,26 +3,34 @@ import curses  # for user input, pip install windows-curses
 import keyboard
 import time
 
+
+'''
+IMPROVEMENTS to do
+
+- maintain a list of empty cell coordinates 
+  and update it when cells become empty or get filled.
+'''
+
 class GameBoard:
-    def __init__(self, size):
-        self.size = size
-        self.grid = [[0] * size for _ in range(size)]
+    def __init__(self, size): # initialize
+        self.size = size # size of grid that will be sizexsize
+        self.grid = [[0] * size for _ in range(size)] # preallocate memory space for gid
         self.empty_cells = [1] * (size * size) # it is 1 becaus eif all are 0 it is game over
 
 #########################################################################################
     
-    def update(self):
-        for row in self.grid:
+    def update(self): # function that print on terminal the grid
+        for row in self.grid: #pass trough each row
             # Use join to add spaces between elements in each row
             row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
-            print(row_str)
+            print(row_str) #print each tiles number with the corrrect and adjusted space btw the others
 
 #########################################################################################
     
-    def read_user_input(self):
+    def read_user_input(self): #read the arrows form keyboard user
          while True:
             if keyboard.is_pressed('left'):
-                self.user_input = 'left'
+                self.user_input = 'left' # store the input arrow from user
                 break
             elif keyboard.is_pressed('right'):
                 self.user_input = 'right'
@@ -37,19 +45,19 @@ class GameBoard:
     
 #########################################################################################
 
-    def spown_new(self):
+    def spown_new(self): # function to spawn a new value that can be 2 or 4 in the empty cells
         # Define the possible outcomes and their corresponding weights
         outcomes = [2, 4]
         weights = [9, 1]  # 90% chance of 2, 10% chance of 4
         # Use random.choices() to select a number based on the defined weights
-        number = random.choices(outcomes, weights)[0]
+        number = random.choices(outcomes, weights)[0] # it returns an array, that is why we add [0]
 
         # track all empty cells (0) and save them in an array 
         # the 'empty_cells' array will contain cordinates for row and column
         self.empty_cells = [None] * (self.size * self.size)
         index = 0  # Index to update the empty_cells list
         for row in range(len(self.grid)):
-            for column in range(len(self.grid[row])):
+            for column in range(len(self.grid[row])): # go trough each element in the array
                 if self.grid[row][column] ==  0:
                     self.empty_cells[index] = [row, column]
                     index += 1
@@ -67,52 +75,80 @@ class GameBoard:
 #########################################################################################
 
     def move_up(self, val, row, column):
-        while row != 0:
+        merged_tiles = [[False] * self.size for _ in range(self.size)] # Initialize a list to track merged tiles for this move
+
+        while row != 0: # given a row, we will go up untill it reach the row 0(top one) or a value diffrent than 0 in the tiles occur
             #print('row ', row)
             #print('colum ', column)
             #print('element above ', self.grid[row-1][column])
-            if self.grid[row-1][column] == 0:
-                self.grid[row][column], self.grid[row-1][column] = 0, val
+            if self.grid[row-1][column] == 0: # we can move up
+                self.grid[row][column], self.grid[row-1][column] = 0, val # switch number with the above 0
+                # Mark the tile as merged
+                merged_tiles[row - 1][column] = True
             else: 
                 #check if need to merge
-                if self.grid[row-1][column] == self.grid[row][column]:
-                    self.grid[row][column], self.grid[row-1][column] = 0, self.grid[row][column]+self.grid[row-1][column] 
+                if self.grid[row-1][column] == self.grid[row][column] and not merged_tiles[row - 1][column]:
+                    self.grid[row][column], self.grid[row-1][column] = 0, self.grid[row][column]+self.grid[row-1][column]  # switch with the merged number and replace a with a 0 in the position below
+                    # Mark both tiles as merged
+                    merged_tiles[row - 1][column] = True
+                    merged_tiles[row][column] = True
                 else:
                     pass
                 break
             row -= 1
     def move_down(self, val, row, column):
+        merged_tiles = [[False] * self.size for _ in range(self.size)]
+
         while row != len(self.grid)-1:
             if self.grid[row+1][column] == 0:
                 self.grid[row][column], self.grid[row+1][column] = 0, val
+
+                merged_tiles[row + 1][column] = True
             else: 
                 #check if need to merge
-                if self.grid[row+1][column] == self.grid[row][column]:
+                if self.grid[row+1][column] == self.grid[row][column] and not merged_tiles[row + 1][column]:
                     self.grid[row][column], self.grid[row+1][column] = 0, self.grid[row][column]+self.grid[row+1][column] 
+
+                    merged_tiles[row + 1][column] = True
+                    merged_tiles[row][column] = True
                 else:
                     pass
                 break
             row += 1
     def move_left(self, val, row, column):
+        merged_tiles = [[False] * self.size for _ in range(self.size)]
+
         while column != 0:
             if self.grid[row][column-1] == 0:
                 self.grid[row][column], self.grid[row][column-1] = 0, val
+                
+                merged_tiles[row][column-1] = True
             else: 
                 #check if need to merge
-                if self.grid[row][column-1] == self.grid[row][column]:
-                    self.grid[row][column], self.grid[row][column-1] = 0, self.grid[row][column]+self.grid[row][column-1] 
+                if self.grid[row][column-1] == self.grid[row][column] and not merged_tiles[row][column-1]:
+                    self.grid[row][column], self.grid[row][column-1] = 0, self.grid[row][column]+self.grid[row][column-1]
+                    
+                    merged_tiles[row][column-1] = True
+                    merged_tiles[row][column] = True 
                 else:
                     pass
                 break
             column -= 1
     def move_right(self, val, row, column):
+        merged_tiles = [[False] * self.size for _ in range(self.size)]
+
         while column != len(self.grid[row])-1:
             if self.grid[row][column+1] == 0:
                 self.grid[row][column], self.grid[row][column+1] = 0, val
+
+                merged_tiles[row][column + 1] = True
             else: 
                 #check if need to merge
-                if self.grid[row][column+1] == self.grid[row][column]:
+                if self.grid[row][column+1] == self.grid[row][column] and not merged_tiles[row][column + 1]:
                     self.grid[row][column], self.grid[row][column+1] = 0, self.grid[row][column]+self.grid[row][column+1] 
+                    
+                    merged_tiles[row][column + 1] = True
+                    merged_tiles[row][column] = True
                 else:
                     pass
                 break
@@ -179,3 +215,7 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     time.sleep(0.5)
     print('----------------')
 game_board.update()
+
+
+
+
