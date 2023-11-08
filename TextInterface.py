@@ -8,7 +8,14 @@ import time
 IMPROVEMENTS to do
 
 - maintain a list of empty cell coordinates 
-  and update it when cells become empty or get filled.
+  and update it when cells become empty or get filled. OR
+  Use set()
+ADD TO GAME
+- ranking
+- cpu with tree/heap to simulate outcome that garantee best score (maybe 5 levels)
+- keep track of score
+- use algorithm (es: sortig, recurtion...)
+- undo function -> link list to undo a move
 '''
 
 class GameBoard:
@@ -54,6 +61,7 @@ class GameBoard:
 
         # track all empty cells (0) and save them in an array 
         # the 'empty_cells' array will contain cordinates for row and column
+        self.empty_cells = [(row, col) for col in range(len(self.grid[row])) for row in range(len(self.grid)) if self.grid[row][col] == 0]
         self.empty_cells = [None] * (self.size * self.size)
         index = 0  # Index to update the empty_cells list
         for row in range(len(self.grid)):
