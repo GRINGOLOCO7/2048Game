@@ -175,11 +175,12 @@ class GameBoard:
 #########################################################################################
     
     def check_unvilid_move(self):
-        past__grid = self.pastgrids.pop()
-        if past__grid == self.grid:
+        past__grid = self.pastgrids.pop() # pop last status of the grid
+        if past__grid == self.grid: # if the last status of the grid is the same as current we have a faul move... we dont allow it
             print("No space for this move... try another direction")
-            self.grid = past__grid
+            self.past_grids(self.grid) # add again the popped value
             return True
+        self.past_grids(self.grid) # add again the popped value
         return False
 
 #########################################################################################
@@ -229,7 +230,3 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     time.sleep(0.5)
     print('----------------')
 game_board.update()
-
-
-
-
