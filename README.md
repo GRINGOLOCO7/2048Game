@@ -65,6 +65,8 @@ The `GameBoard` class is the core of the game logic and user interaction. It con
 
 - **`past_grids(self, grid_to_push)`**: Pushes a copy of the current grid onto the `pastgrids` stack, allowing for undo functionality.
 
+- **`check_invalid_move(self)`**: Checks if the current move is invalid (undo function). Restores the grid to the previous state if the move is invalid.
+
 ### `Stack` Class
 
 The `Stack` class is a linked list-based implementation of a stack, used to store past grid states for undo functionality.
@@ -88,6 +90,8 @@ The main game loop handles the overall flow of the game. It includes the followi
     - **Read User Input**: Wait for and process the user's arrow key input.
     
     - **Move & Merge**: Execute the move and merge logic based on the user's input.
+
+    - **Check Invalid Move**: Verify if the move is invalid (undo). If invalid, restore the grid to the previous state.
     
     - **Spawn New Number**: Generate a new random number on the grid.
     

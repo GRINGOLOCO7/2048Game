@@ -23,7 +23,7 @@ class GameBoard:
     
     def read_user_input(self):
         # Define the keys for each direction
-        direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow'}
+        direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow', 'undo': 'u'}
 
         while True:
             # Check for key events
@@ -168,19 +168,28 @@ class GameBoard:
 
 #########################################################################################
 
-        def past_grids(self, grid_to_push):
-            copied_grid = [row[:] for row in grid_to_push]
-            self.pastgrids.push(copied_grid)
+    def past_grids(self, grid_to_push):
+        copied_grid = [row[:] for row in grid_to_push]
+        self.pastgrids.push(copied_grid)
+
+#########################################################################################
+    
+    def check_unvilid_move(self):
+        past__grid = self.pastgrids.pop()
+        if past__grid == self.grid:
+            print("No space for this move... try another direction")
+            self.grid = past__grid
+            return True
+        return False
 
 #########################################################################################
 
 
 
-
 # initialize array
-print("You can chose the size of your grid")
-print("How much do you want ot challeng your-self?")
-print("(Usually the grid is a 4x4)")
+print("ROLES OF THE GAME:\n1. Move tiles with arrows\n2. press 'u' to undo, it will go back to previous move\n3. Arrive to 2048 with one tile to win\n4. fill all the spaces to lose")
+print("Let's play... But first:")
+print("Chose the size of your grid\nHow much do you want ot challeng your-self?\n(Usually the grid is a 4x4)")
 size = int(input("So... what is the size of the grid:\t"))
 game_board = GameBoard(size)
 game_board.spown_new()
@@ -192,7 +201,10 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     # print the grid
     game_board.update()
 
-    # detect desire moovment
+    # save grid status in the game_board.pastgrids
+    game_board.past_grids(game_board.grid)
+
+    # detect desire moovment or undo function (u):
     game_board.read_user_input()
     # move & merge
     # 1. move all in the direction pressed
@@ -200,8 +212,18 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     # 2. merge what needed
     game_board.merge(game_board.user_input)
 
-    # spown new number (2 or 4) in the grid
-    game_board.spown_new()
+
+    #print(game_board.pastgrids.pop())  # -> past
+    #print(game_board.grid)             # -> future
+
+
+    # check for fake move:
+    # 1. if past grid is the same as the move after the canges (True), we don't spown new number
+    if game_board.check_unvilid_move() == True:
+        pass
+    else: #2. past grid is diffrent as current grid -> correct! spown new number
+        # spown new number (2 or 4) in the grid
+        game_board.spown_new()
     
     # pause the loop
     time.sleep(0.5)
