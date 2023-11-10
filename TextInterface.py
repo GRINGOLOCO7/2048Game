@@ -2,27 +2,14 @@ import random
 import curses  # for user input, pip install windows-curses
 import keyboard
 import time
-#import Stack
-
-
-'''
-IMPROVEMENTS to do
-- maintain a list of empty cell coordinates 
-  and update it when cells become empty or get filled. OR
-  Use set() (WESSAM)
-ADD TO GAME [use algorithm (es: sortig, recurtion...)]
-- ranking (sorting) (SERGIO)
-- keep track of score (stack) (SERGIO)
-- undo function -> (link list/stack) to undo a move   (GRING)
-
-- cpu with tree/heap to simulate outcome that garantee best score (maybe 5 levels)
-'''
+import Stack
 
 class GameBoard:
     def __init__(self, size): # initialize
         self.size = size # size of grid that will be sizexsize
         self.grid = [[0] * size for _ in range(size)] # preallocate memory space for gid
-        self.empty_cells = self.grid 
+        self.empty_cells =  [(row, col) for row in range(len(self.grid)) for col in range(len(self.grid[row])) if self.grid[row][col] == 0]
+        self.pastgrids = Stack.Stack()
 
 #########################################################################################
     
@@ -34,20 +21,17 @@ class GameBoard:
 
 #########################################################################################
     
-    def read_user_input(self): #read the arrows form keyboard user
-         while True:
-            if keyboard.is_pressed('left'):
-                self.user_input = 'left' # store the input arrow from user
-                break
-            elif keyboard.is_pressed('right'):
-                self.user_input = 'right'
-                break
-            elif keyboard.is_pressed('down'):
-                self.user_input = 'down'
-                break
-            elif keyboard.is_pressed('up'):
-                self.user_input = 'up'
-                break
+    def read_user_input(self):
+        # Define the keys for each direction
+        direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow'}
+
+        while True:
+            # Check for key events
+            for direction, key in direction_keys.items():
+                if keyboard.is_pressed(key):
+                    self.user_input = direction
+                    return
+
             time.sleep(0.1)
     
 #########################################################################################
@@ -167,7 +151,7 @@ class GameBoard:
 #########################################################################################
 
     def is_game_over(self):
-        if any(self.empty_cells):
+        if self.empty_cells:
             return False
         print("GAME OVER")
         return True
@@ -184,6 +168,11 @@ class GameBoard:
 
 #########################################################################################
 
+        def past_grids(self, grid_to_push):
+            copied_grid = [row[:] for row in grid_to_push]
+            self.pastgrids.push(copied_grid)
+
+#########################################################################################
 
 
 
@@ -206,9 +195,10 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     # detect desire moovment
     game_board.read_user_input()
     # move & merge
+    # 1. move all in the direction pressed
     game_board.move(game_board.user_input)
+    # 2. merge what needed
     game_board.merge(game_board.user_input)
-    game_board.move(game_board.user_input)
 
     # spown new number (2 or 4) in the grid
     game_board.spown_new()
