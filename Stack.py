@@ -23,6 +23,6 @@ class Stack:
 stack = Stack()
 stack.push(3)
 stack.push(4)
-stack.pop() #--> 4
-print(stack.pop()) #--> 3
-stack.pop() #--> nothing
+#stack.pop() #--> 4
+#print(stack.pop()) #--> 3
+#stack.pop() #--> nothing
