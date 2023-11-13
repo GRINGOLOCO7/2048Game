@@ -241,6 +241,7 @@ size = int(input("So... what is the size of the grid:\t"))
 game_board = GameBoard(size)
 game_board.spown_new()
 game_board.spown_new()
+invalidMove = False
 
 #########################################################################################
 
@@ -258,8 +259,10 @@ while not game_board.is_game_over() and not game_board.is_game_won():
 
     #####################################################################################
 
-    # save grid status in the game_board.pastgrids
-    game_board.past_grids(game_board.grid)
+    if not invalidMove:
+        # save grid status in the game_board.pastgrids
+        game_board.past_grids(game_board.grid)
+    invalidMove = False
 
     #####################################################################################
 
@@ -279,7 +282,7 @@ while not game_board.is_game_over() and not game_board.is_game_won():
         # check for fake move:
         # 1. if past grid is the same as the move after the canges (True), we don't spown new number
         if game_board.check_unvilid_move():
-            pass
+            invalidMove = True
         else: #2. past grid is diffrent as current grid -> correct! spown new number
             # spown new number (2 or 4) in the grid
             game_board.spown_new()
