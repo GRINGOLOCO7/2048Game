@@ -190,13 +190,13 @@ class GameBoard:
 
 #########################################################################################
 
-    def past_grids(self, grid_to_push):
+    def past_grids(self, grid_to_push, current_score):
         '''
         method that saves the grid status in to a Stak
         It will be used for undo fuction and check for valid moves
         '''
         copied_grid = [row[:] for row in grid_to_push]
-        self.pastgrids.push(copied_grid)
+        self.pastgrids.push(copied_grid, current_score)
 
 #########################################################################################
     
@@ -221,13 +221,12 @@ class GameBoard:
         it restore the grid to his previous state in order to re-do the move
         '''
         print('Move delition...')
-        past__grid = self.pastgrids.pop()
-        past_past__grid = self.pastgrids.pop()
-        if not past_past__grid:  # if the stack contained only one grid status => base state
-            print('base state of grid reached')
-            self.grid = past__grid
-        else: # normal condition
-            self.grid = past_past__grid
+        past_grid, past_score = self.pastgrids.pop()
+        if past_grid is None:  # Check if the stack was empty
+            print('No previous state to revert to')
+            return
+        self.grid = past_grid
+        self.score = past_score  # Update the game score to the previous score
 
 #########################################################################################
 
