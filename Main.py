@@ -10,6 +10,7 @@ class GameBoard:
         self.grid = [[0] * size for _ in range(size)] # preallocate memory space for gid
         self.empty_cells =  [(row, col) for row in range(len(self.grid)) for col in range(len(self.grid[row])) if self.grid[row][col] == 0]
         self.pastgrids = Stack.Stack()
+        self.score = 0
 
 #########################################################################################
     
@@ -122,6 +123,8 @@ class GameBoard:
                                 self.grid[r][col] *= 2
                                 self.grid[r + 1][col] = 0
                                 merged_tiles[r][col] = True
+                                merged_values = self.grid[r][col]
+                                self.score += merged_values
                                 break
         if direction == 'down':
             for col in range(self.size):
@@ -135,6 +138,8 @@ class GameBoard:
                                 self.grid[r][col] *= 2
                                 self.grid[r - 1][col] = 0
                                 merged_tiles[r][col] = True
+                                merged_values = self.grid[r][col]
+                                self.score += merged_values
                                 break
         if direction == 'right':
             for row in range(self.size):
@@ -148,6 +153,8 @@ class GameBoard:
                                 self.grid[row][c] *= 2
                                 self.grid[row][c - 1] = 0
                                 merged_tiles[row][c] = True
+                                merged_values = self.grid[row][c]
+                                self.score += merged_values
                                 break
         if direction == 'left':
             for row in range(self.size):
@@ -161,6 +168,8 @@ class GameBoard:
                                 self.grid[row][c] *= 2
                                 self.grid[row][c + 1] = 0
                                 merged_tiles[row][c] = True
+                                merged_values = self.grid[row][c]
+                                self.score += merged_values
                                 break
 
 
@@ -208,9 +217,9 @@ class GameBoard:
         past__grid = self.pastgrids.pop() # pop last status of the grid
         if past__grid == self.grid: # if the last status of the grid is the same as current we have a faul move... we dont allow it
             print("No space for this move... try another direction")
-            self.past_grids(past__grid) # add again the popped value
+            self.past_grids(past__grid, self.score) # add again the popped value
             return True
-        self.past_grids(past__grid) # add again the popped value
+        self.past_grids(past__grid, self.score) # add again the popped value
         return False
 
 #########################################################################################
@@ -258,7 +267,7 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     #####################################################################################
 
     # save grid status in the game_board.pastgrids
-    game_board.past_grids(game_board.grid)
+    game_board.past_grids(game_board.grid, game_board.score)
 
     #####################################################################################
 
@@ -301,7 +310,6 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     time.sleep(0.5)
     print('----------------')
 game_board.update()
-
 
 
 
