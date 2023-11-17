@@ -10,6 +10,7 @@ class GameBoard:
         self.grid = [[0] * size for _ in range(size)] # preallocate memory space for gid
         self.empty_cells =  [(row, col) for row in range(len(self.grid)) for col in range(len(self.grid[row])) if self.grid[row][col] == 0]
         self.pastgrids = Stack.Stack()
+        self.past_scores = Stack.Stack()
         self.score = 0
 
 #########################################################################################
@@ -22,6 +23,7 @@ class GameBoard:
             # Use join to add spaces between elements in each row
             row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
             print(row_str) #print each tiles number with the corrrect and adjusted space btw the others
+        print(f"Score: {self.score}")
 
 #########################################################################################
     
@@ -123,8 +125,7 @@ class GameBoard:
                                 self.grid[r][col] *= 2
                                 self.grid[r + 1][col] = 0
                                 merged_tiles[r][col] = True
-                                merged_values = self.grid[r][col]
-                                self.score += merged_values
+                                self.score += self.grid[r][col]
                                 break
         if direction == 'down':
             for col in range(self.size):
@@ -138,8 +139,7 @@ class GameBoard:
                                 self.grid[r][col] *= 2
                                 self.grid[r - 1][col] = 0
                                 merged_tiles[r][col] = True
-                                merged_values = self.grid[r][col]
-                                self.score += merged_values
+                                self.score += self.grid[r][col]
                                 break
         if direction == 'right':
             for row in range(self.size):
@@ -153,8 +153,7 @@ class GameBoard:
                                 self.grid[row][c] *= 2
                                 self.grid[row][c - 1] = 0
                                 merged_tiles[row][c] = True
-                                merged_values = self.grid[row][c]
-                                self.score += merged_values
+                                self.score += self.grid[row][c]
                                 break
         if direction == 'left':
             for row in range(self.size):
@@ -168,8 +167,7 @@ class GameBoard:
                                 self.grid[row][c] *= 2
                                 self.grid[row][c + 1] = 0
                                 merged_tiles[row][c] = True
-                                merged_values = self.grid[row][c]
-                                self.score += merged_values
+                                self.score += self.grid[row][c]
                                 break
 
 
@@ -199,13 +197,14 @@ class GameBoard:
 
 #########################################################################################
 
-    def past_grids(self, grid_to_push, current_score):
+    def past_grids(self, grid_to_push, score):
         '''
         method that saves the grid status in to a Stak
         It will be used for undo fuction and check for valid moves
         '''
         copied_grid = [row[:] for row in grid_to_push]
-        self.pastgrids.push(copied_grid, current_score)
+        
+        self.pastgrids.push(copied_grid, score)
 
 #########################################################################################
     
@@ -214,12 +213,12 @@ class GameBoard:
         method to check if mive is valid
         it means that if no tiles can move in that direction th emove is not allowed
         '''
-        past__grid = self.pastgrids.pop() # pop last status of the grid
+        past__grid, score = self.pastgrids.pop() # pop last status of the grid
         if past__grid == self.grid: # if the last status of the grid is the same as current we have a faul move... we dont allow it
             print("No space for this move... try another direction")
-            self.past_grids(past__grid, self.score) # add again the popped value
+            self.past_grids(past__grid, score) # add again the popped value
             return True
-        self.past_grids(past__grid, self.score) # add again the popped value
+        self.past_grids(past__grid, score) # add again the popped value
         return False
 
 #########################################################################################
@@ -230,12 +229,16 @@ class GameBoard:
         it restore the grid to his previous state in order to re-do the move
         '''
         print('Move delition...')
-        past_grid, past_score = self.pastgrids.pop()
-        if past_grid is None:  # Check if the stack was empty
-            print('No previous state to revert to')
-            return
-        self.grid = past_grid
-        self.score = past_score  # Update the game score to the previous score
+        past__grid, past_score1 = self.pastgrids.pop()
+        past_past__grid, past_score = self.pastgrids.pop()
+        if not past_past__grid:  # if the stack contained only one grid status => base state
+            print('base state of grid reached')
+            self.score = past_score1
+            self.grid = past__grid
+        else: # normal condition
+            self.grid = past_past__grid
+            self.score = past_score
+
 
 #########################################################################################
 
@@ -249,6 +252,7 @@ size = int(input("So... what is the size of the grid:\t"))
 game_board = GameBoard(size)
 game_board.spown_new()
 game_board.spown_new()
+invalidMove = False
 
 #########################################################################################
 
@@ -266,8 +270,10 @@ while not game_board.is_game_over() and not game_board.is_game_won():
 
     #####################################################################################
 
-    # save grid status in the game_board.pastgrids
-    game_board.past_grids(game_board.grid, game_board.score)
+    if not invalidMove:
+        # save grid status in the game_board.pastgrids
+        game_board.past_grids(game_board.grid, game_board.score)
+    invalidMove = False
 
     #####################################################################################
 
@@ -287,7 +293,7 @@ while not game_board.is_game_over() and not game_board.is_game_won():
         # check for fake move:
         # 1. if past grid is the same as the move after the canges (True), we don't spown new number
         if game_board.check_unvilid_move():
-            pass
+            invalidMove = True
         else: #2. past grid is diffrent as current grid -> correct! spown new number
             # spown new number (2 or 4) in the grid
             game_board.spown_new()
@@ -310,6 +316,5 @@ while not game_board.is_game_over() and not game_board.is_game_won():
     time.sleep(0.5)
     print('----------------')
 game_board.update()
-
 
 
