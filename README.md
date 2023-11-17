@@ -23,21 +23,21 @@ The 2048 Game project is a Python implementation of the popular 2048 puzzle game
 - **Merge Functionality**: Merge tiles with the same value when moving in a specific direction.
 - **Random Number Generator**: Spawn new tiles with random values.
 - **Past Grid Tracking**: Keep track of the previous grid states using a stack.
+- **Score Tracking**: Each move the score get updated
 - **Game Over and Victory Detection**: Detect when the game is over or when the player wins.
 
 ## Data Structures Used
 
-- 2D Array: Representing the game grid.
-- Stack (linked list-based): Storing past grid states.
-- Dictionary: Managing key game features.
+- **2D Array**: Representing the game grid.
+- **Stack** (linked list-based): Storing past grid states.
+- **Dictionary**: Managing key game features.
+- **Set**: Use a set to keep track of empty celleces (tiles with value 0)
 
 ## Algorithms
 
 - **Merge Algorithm**: Sum two cells adjacent in the same direction of movement.
 - **Random Number Generator Algorithm**: Generate random numbers in the grid.
 - **Move Algorithm**: Move the grid in the specified direction.
-
-## Code Structure Explanation
 
 ## Code Structure Explanation
 
@@ -48,6 +48,8 @@ The code is organized into several components to enhance readability and maintai
 The `GameBoard` class is the core of the game logic and user interaction. It contains the following methods:
 
 - **`__init__(self, size)`**: Initializes the game board with a specified size and sets up the initial grid with empty cells.
+
+- **`initialize_empty_coordinates`**: Go troght all the grid as save the empty spaces in a set()
 
 - **`update(self)`**: Prints the current state of the game grid to the terminal.
 
@@ -69,13 +71,15 @@ The `GameBoard` class is the core of the game logic and user interaction. It con
 
 - **`undo(self)`**: Pop form the `pastgrids` Stack the previous state of the grid and restore it. It allow to go back to the previous move.
 
+- **`GAME(self)`**: **Main methiod** that loop until game is won or game is lost. It combine in the correct order all the previous methosds, showing the game to the user. 
+
 ### `Stack` Class
 
-The `Stack` class is a linked list-based implementation of a stack, used to store past grid states for undo functionality.
+The `Stack` class is a **linked list-based** implementation of a stack, used to store past grid states for undo functionality.
 
-- **`push(self, item)`**: Adds an item to the top of the stack.
+- **`push(self, item, score)`**: Adds a grid and his related score to the top of the stack.
 
-- **`pop(self)`**: Removes and returns the item from the top of the stack.
+- **`pop(self)`**: Removes and returns the grid and score from the top of the stack.
 
 ### Main Game Loop
 
@@ -83,7 +87,7 @@ The main game loop handles the overall flow of the game. It includes the followi
 
 1. **Initialize the Game Board**: Create an instance of the `GameBoard` class with a specified size and spawn initial numbers.
 
-2. **Main Loop Execution**: Continuously loop while the game is not over or the player has not won.
+2. **Main Loop Execution**: Afther calling **`GAME`** function: Continuously loop while the game is not over or the player has not won.
 
     - **Update**: Print the current state of the game grid.
     
