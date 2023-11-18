@@ -2,6 +2,7 @@ import random
 import curses  # for user input, pip install windows-curses
 import keyboard
 import time
+#from stack import Stack 
 from utilities.stack import Stack
 
 class GameBoard:
@@ -244,69 +245,4 @@ class GameBoard:
             self.score = tuple_past[1]
 
 #########################################################################################
-
-    def GAME(self):
-        self.spown_new()
-        self.spown_new()
-        invalidMove = False
-
-        #########################################################################################
-
-        # Main game loop
-        while not self.is_game_over() and not self.is_game_won():
-            ### Handle user input and game logic
-            #####################################################################################
-            
-            # print the grid
-            self.update()
-
-            # detect desire moovment or undo function (u):
-            self.read_user_input()
-
-            #####################################################################################
-
-            if not invalidMove:
-                # save grid status in the game_board.pastgrids
-                self.past_grids(self.grid, self.score)
-            invalidMove = False
-
-            #####################################################################################
-
-            # move, merge, check for valid move or undo
-            if self.user_input != 'undo':
-
-                #################################################################################
-
-                # move & merge
-                # 1. move all in the direction pressed
-                self.move(self.user_input)
-                # 2. merge what needed
-                self.merge(self.user_input)
-
-                #################################################################################
-
-                # check for fake move:
-                # 1. if past grid is the same as the move after the canges (True), we don't spown new number
-                if self.check_unvilid_move():
-                    invalidMove = True
-                else: #2. past grid is diffrent as current grid -> correct! spown new number
-                    # spown new number (2 or 4) in the grid
-                    self.spown_new()
-                
-                #################################################################################
-
-            else: # user want to undo and go back to previous move
-                self.undo()
-            
-            #####################################################################################
-
-            # pause the loop
-            time.sleep(0.5)
-            print('----------------')
-
-        #####################################################################################
-
-        # Prnt last grid
-        self.update()
-
 

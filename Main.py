@@ -1,5 +1,5 @@
 from utilities.game_class import GameBoard
-
+from utilities.main_loop import GAME
 
 def main():
     # initialize array
@@ -8,7 +8,7 @@ def main():
     print("Chose the size of your grid\nHow much do you want ot challeng your-self?\n(Usually the grid is a 4x4)")
     size = int(input("So... what is the size of the grid:\t"))
     game_board = GameBoard(size)
-    game_board.GAME()
+    GAME(game_board)
 
 
 
