@@ -1,120 +1,104 @@
-import random
-import curses  # for user input, pip install windows-curses
-import keyboard
-import time
-#from stack import Stack 
-from utilities.stack import Stack
+import random  # import random for spawning element in the grid
+import curses  # for user input
+import keyboard # for reading keyboard
+import time  # for a delay from a move and another
+#from stack import Stack                 # comment this if u run main.py
+from utilities.stack import Stack      # comment this if u run current file
 
-class GameBoard:
+class GameBoard:   # class that crete our gred... whill have many methods
     def __init__(self, size): # initialize
         self.size = size # size of grid that will be sizexsize
         self.grid = [[0] * size for _ in range(size)] # preallocate memory space for gid
-        self.empty_cells =  self.initialize_empty_coordinates()
-        self.pastgrids = Stack()
-        self.score = 0
+        self.empty_cells =  self.initialize_empty_coordinates(self.grid) # create a set of tupples for ech value equal to 0 in the gred
+        self.pastgrids = Stack() # initialize a stack to keep track of past grids
+        self.score = 0  # initialize user score to 0
 
 #########################################################################################
 
-    def initialize_empty_coordinates(self):
-        empty_cells = set()
-        for i in range(len(self.grid)):
-            for j in range(len(self.grid[i])):
-                if self.grid[i][j] == 0:
-                    empty_cells.add((i, j))
-        return empty_cells
+    def initialize_empty_coordinates(self, grid): # metod to find all value equal 0 in the grid andadd the to the set empty_celles
+        empty_cells = set() # initialize empty_cells as a empty set
+        for i in range(len(grid)): # go trough each row
+            for j in range(len(grid[i])): # go trough each column
+                if grid[i][j] == 0: # check condition... if the current element in the grid that we are watching is equal 0
+                    empty_cells.add((i, j)) # add the cordinates in empty_cells
+        return empty_cells # return empty_cells  --> "self.empty_cells =  self.initialize_empty_coordinates(self.grid)"
 
 #########################################################################################
     
-    def update(self): # function that print on terminal the grid
-        """
-        Displays the current state of the game board.
-        """
-        for row in self.grid: #pass trough each row
+    def update(self, grid): # method that displays the current state of the game board
+        for row in grid: #pass trough each row
             # Use join to add spaces between elements in each row
             row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
+            # {num:5} is because 2048 is 4 digit, maximum possible number in the grid is 1024 and we dont wont the grid to shift 
+            # so we set fix space between numbers
             print(row_str) #print each tiles number with the corrrect and adjusted space btw the others
-        print(f"Score: {self.score}")
+        print(f"Score: {self.score}") # print the current score
 
 #########################################################################################
     
-    def read_user_input(self):
-        """
-        Waits for and reads the user's input for direction or undo.
-        """
-        # Define the keys for each direction
+    def read_user_input(self): # Waits for and reads the user's input for direction or undo.
+        # Define the keys for each direction and 'u' for undo
         direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow', 'undo': 'u'}
-        while True:
-            # Check for key events
-            for direction, key in direction_keys.items():
-                if keyboard.is_pressed(key):
-                    self.user_input = direction
-                    return
-            time.sleep(0.1)
+        while True:  # while we don't get an input nothing will append and we will be stuck in this function
+            for direction, key in direction_keys.items(): # Check for key events
+                if keyboard.is_pressed(key): # detect if we pressed the current key
+                    self.user_input = direction # save the value pressed inside the variable 'self.user_input'
+                    return  # exit the loop
     
 #########################################################################################
 
-    def spown_new(self): 
-        '''
-        method to spawn a new value that can be 2 or 4 in the empty cells
-        '''
+    def spown_new(self, grid, empty_cells): # method to spawn a new value that can be 2 or 4 in the empty cells
         # Define the possible outcomes and their corresponding weights
-        outcomes = [2, 4]
+        outcomes = [2, 4] # # Define the possible outcomes and their corresponding weights
         weights = [9, 1]  # 90% chance of 2, 10% chance of 4
         # Use random.choices() to select a number based on the defined weights
         number = random.choices(outcomes, weights)[0] # it returns an array, that is why we add [0]
-        # track all empty cells (0) and save them in an array 
-        # the 'empty_cells' set will contain cordinates for row and column
-        self.empty_cells = self.initialize_empty_coordinates()
-        # chose a cordinate where we will put number
-        # Randomly select a tuple
-        random_tuple = random.choice(tuple(self.empty_cells))
-        # Unpack the tuple into separate variables
-        row, column = random_tuple        
-        # delete that cordinate from self.empty_cells
-        self.empty_cells.remove((row, column))
+        empty_cells = self.initialize_empty_coordinates(grid) # track all empty cells (0) and save their cordinates as a set 
+        random_tuple = random.choice(tuple(empty_cells)) # Randomly select a tuple to chose a cordinate where we will put number
+        row, column = random_tuple   # Unpack the tuple into separate variables
+        empty_cells.remove((row, column)) # delete that cordinate from self.empty_cells
         #print(self.empty_cells)
-        # Place the new number in the selected position
-        self.grid[row][column] = number
+        grid[row][column] = number # Place the new number in the randomly selected position
     
 #########################################################################################
   
-    def move(self, direction):
+    def move(self, direction, grid):
         '''
         method to move the tiles in the inputed direction 
         utill reached limit of the grid or another number diffrent than 0
         '''
-        if direction == 'up':
-            for row in range(self.size - 1, 0, -1):
+        if direction == 'up': # check direction
+            for row in range(self.size - 1, 0, -1): # for the row we start from bottom and go to the top -> this to avoid multiple merged in one moove
                 for column in range(self.size):
                     if row == 0:
                         break
-                    if self.grid[row-1][column] == 0:
-                        self.grid[row][column], self.grid[row-1][column] = 0, self.grid[row][column]
+                    if grid[row-1][column] == 0:
+                        grid[row][column], grid[row-1][column] = 0, grid[row][column]
         if direction == 'down':
             for row in range(self.size):
                 for column in range(self.size):
-                    if row == len(self.grid)-1:
+                    if row == len(grid)-1:
                         break
-                    if self.grid[row+1][column] == 0:
-                        self.grid[row][column], self.grid[row+1][column] = 0, self.grid[row][column]
+                    if grid[row+1][column] == 0:
+                        grid[row][column], grid[row+1][column] = 0, grid[row][column]
         if direction == 'left':
             for row in range(self.size):
                 for column in range(self.size - 1, 0, -1):
                     if column == 0:
                         break
-                    if self.grid[row][column - 1] == 0:
-                        self.grid[row][column], self.grid[row][column - 1] = 0, self.grid[row][column]
+                    if grid[row][column - 1] == 0:
+                        grid[row][column], grid[row][column - 1] = 0, grid[row][column]
         if direction == 'right':
             for row in range(self.size):
                 for column in range(self.size):
-                    if column == len(self.grid[row])-1:
+                    if column == len(grid[row])-1:
                         break
-                    if self.grid[row][column+1] == 0:
-                        self.grid[row][column], self.grid[row][column+1] = 0, self.grid[row][column]
+                    if grid[row][column+1] == 0:
+                        grid[row][column], grid[row][column+1] = 0, grid[row][column]
     
 #########################################################################################
     
-    def merge(self, direction):
+    def merge(self, direction, grid):
         '''
         method to merge the equel tiles according to the direction inputed
         '''
@@ -122,83 +106,88 @@ class GameBoard:
         if direction == 'up':
             for col in range(self.size):
                 for row in range(1, self.size):
-                    if self.grid[row][col] != 0:
+                    if grid[row][col] != 0:
                         for r in range(row - 1, -1, -1):
-                            if self.grid[r][col] == 0:
-                                self.grid[r][col] = self.grid[r + 1][col]
-                                self.grid[r + 1][col] = 0
-                            elif self.grid[r][col] == self.grid[r + 1][col] and not merged_tiles[r][col] and not merged_tiles[r + 1][col]:
-                                self.grid[r][col] *= 2
-                                self.grid[r + 1][col] = 0
+                            if grid[r][col] == 0:
+                                grid[r][col] = grid[r + 1][col]
+                                grid[r + 1][col] = 0
+                            elif grid[r][col] == grid[r + 1][col] and not merged_tiles[r][col] and not merged_tiles[r + 1][col]:
+                                grid[r][col] *= 2
+                                grid[r + 1][col] = 0
                                 merged_tiles[r][col] = True
-                                self.score += self.grid[r][col]
+                                self.score += grid[r][col]
                                 break
         if direction == 'down':
             for col in range(self.size):
                 for row in range(self.size - 2, -1, -1):
-                    if self.grid[row][col] != 0:
+                    if grid[row][col] != 0:
                         for r in range(row + 1, self.size):
-                            if self.grid[r][col] == 0:
-                                self.grid[r][col] = self.grid[r - 1][col]
-                                self.grid[r - 1][col] = 0
-                            elif self.grid[r][col] == self.grid[r - 1][col] and not merged_tiles[r][col] and not merged_tiles[r - 1][col]:
-                                self.grid[r][col] *= 2
-                                self.grid[r - 1][col] = 0
+                            if grid[r][col] == 0:
+                                grid[r][col] = grid[r - 1][col]
+                                grid[r - 1][col] = 0
+                            elif grid[r][col] == grid[r - 1][col] and not merged_tiles[r][col] and not merged_tiles[r - 1][col]:
+                                grid[r][col] *= 2
+                                grid[r - 1][col] = 0
                                 merged_tiles[r][col] = True
-                                self.score += self.grid[r][col]
+                                self.score += grid[r][col]
                                 break
         if direction == 'right':
             for row in range(self.size):
                 for col in range(self.size - 2, -1, -1):
-                    if self.grid[row][col] != 0:
+                    if grid[row][col] != 0:
                         for c in range(col + 1, self.size):
-                            if self.grid[row][c] == 0:
-                                self.grid[row][c] = self.grid[row][c - 1]
-                                self.grid[row][c - 1] = 0
-                            elif self.grid[row][c] == self.grid[row][c - 1] and not merged_tiles[row][c] and not merged_tiles[row][c - 1]:
-                                self.grid[row][c] *= 2
-                                self.grid[row][c - 1] = 0
+                            if grid[row][c] == 0:
+                                grid[row][c] = grid[row][c - 1]
+                                grid[row][c - 1] = 0
+                            elif grid[row][c] == grid[row][c - 1] and not merged_tiles[row][c] and not merged_tiles[row][c - 1]:
+                                grid[row][c] *= 2
+                                grid[row][c - 1] = 0
                                 merged_tiles[row][c] = True
-                                self.score += self.grid[row][c]
+                                self.score += grid[row][c]
                                 break
         if direction == 'left':
             for row in range(self.size):
                 for col in range(1, self.size):
-                    if self.grid[row][col] != 0:
+                    if grid[row][col] != 0:
                         for c in range(col - 1, -1, -1):
-                            if self.grid[row][c] == 0:
-                                self.grid[row][c] = self.grid[row][c + 1]
-                                self.grid[row][c + 1] = 0
-                            elif self.grid[row][c] == self.grid[row][c + 1] and not merged_tiles[row][c] and not merged_tiles[row][c + 1]:
-                                self.grid[row][c] *= 2
-                                self.grid[row][c + 1] = 0
+                            if grid[row][c] == 0:
+                                grid[row][c] = grid[row][c + 1]
+                                grid[row][c + 1] = 0
+                            elif grid[row][c] == grid[row][c + 1] and not merged_tiles[row][c] and not merged_tiles[row][c + 1]:
+                                grid[row][c] *= 2
+                                grid[row][c + 1] = 0
                                 merged_tiles[row][c] = True
-                                self.score += self.grid[row][c]
+                                self.score += grid[row][c]
                                 break
+        flattened_true_values = [value for row in merged_tiles for value in row if value is True]
+        return flattened_true_values # will use to see if the game is game over or there stil are possible moves
 
 
 #########################################################################################
 
-    def is_game_over(self):
-        '''
-        method to check game over condition
-        '''
-        if self.empty_cells:
-            return False
-        print("GAME OVER")
-        return True
+    def is_game_over(self, grid, empty_cells): # method to check game over condition
+        if empty_cells: # if the set 'empty_cells' is not empty
+            return False # the game can contnue, we return false just for how the condition is formuled in the main loop
+        directions = ['left', 'right', 'up', 'down'] # initialize all directions
+        for dir in directions: # loop trough each possible direction
+            copied_grid = [row[:] for row in grid] # create copy of the grid
+            temp_grid = GameBoard(self.size) # create a gameboard istance
+            temp_grid.grid = copied_grid # set the temporary grid equal to the given grid
+            merged_occur = temp_grid.merge(dir, temp_grid.grid) # merge the grid in dir directions 
+            if merged_occur: # check if at least two tiles was merged
+                return False # there is still a possible move => continume the game
+            # if yes return false
+        print("GAME OVER") # all empty cells are full and there are no more possible move
+        return True # return true to end the loop => u lose
 
 #########################################################################################
 
-    def is_game_won(self):
-        '''
-        method to check win condition
-        '''
-        for row in range(len(self.grid)):
-            for column in range(len(self.grid[row])):
-                if self.grid[row][column] ==  2048:
+    def is_game_won(self): # method to check win condition
+        for row in range(len(self.grid)): # go trough each row
+            for column in range(len(self.grid[row])): # go trough each colum
+                if self.grid[row][column] ==  2048: # check if ther is one value equal to 2048
                     print("YOW WIN")
-                    return True
+                    return True # condition for win is acheved
         return False
 
 #########################################################################################
@@ -208,8 +197,8 @@ class GameBoard:
         method that saves the grid status in to a Stak
         It will be used for undo fuction and check for valid moves
         '''
-        copied_grid = [row[:] for row in grid_to_push]       
-        self.pastgrids.push(copied_grid, score)
+        copied_grid = [row[:] for row in grid_to_push]  # make a copy of the grid so there is no relation with the game_board   
+        self.pastgrids.push(copied_grid, score) # pursh grid and score in to the stack
 
 #########################################################################################
     
@@ -233,16 +222,16 @@ class GameBoard:
         method to redo the move
         it restore the grid to his previous state in order to re-do the move
         '''
-        print('Move delition...')
-        past__grid, past_score1 = self.pastgrids.pop()
-        tuple_past = self.pastgrids.pop()
+        # user pressed 'u'
+        past__grid, past_score1 = self.pastgrids.pop() # pop the last grid stattus and score
+        tuple_past = self.pastgrids.pop() # pop the past past grid value and score
         if not tuple_past:  # if the stack contained only one grid status => base state
             print('base state of grid reached')
-            self.score = past_score1
-            self.grid = past__grid
+            self.score = past_score1 # set score as last score
+            self.grid = past__grid # set grid as the las grid
         else: # normal condition
-            self.grid = tuple_past[0]
-            self.score = tuple_past[1]
+            self.grid = tuple_past[0] # set grid as the las grid
+            self.score = tuple_past[1] # set score as last score
 
 #########################################################################################
 

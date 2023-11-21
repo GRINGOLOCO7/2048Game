@@ -8,7 +8,7 @@ class TreePossibilities:
 
     #####################################################################################
 
-    def __init__(self, game_board) -> None:
+    def __init__(self, game_board):
         self.game_board = game_board
 
     #####################################################################################
@@ -95,7 +95,6 @@ class TreePossibilities:
 
 
 
-
 '''
 # create board
 game_board = GameBoard(4)  # is a grid -> is my grid
@@ -105,7 +104,7 @@ tree_of_possibilities.spawn_number()
 tree_of_possibilities.spawn_number()
 tree_of_possibilities.game_board.update()
 print("\n\n")
-root = tree_of_possibilities.create_tree(depth=1)
+root = tree_of_possibilities.create_tree(depth=2)
 tree_of_possibilities.print_tree_grids(root)
 print("\n\n")
 print(tree_of_possibilities.game_board.grid)
