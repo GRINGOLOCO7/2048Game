@@ -25,19 +25,19 @@ class TreePossibilities:
         return root
     def explore_tree(self, node, grid, directions, depth):
         if depth == 0: # base case
-            return  
-        self.spawn_number() 
+            return
+        self.spawn_number()
         for direction in directions:
             # Create a copy of the current grid to simulate the move
             temp_grid = [row[:] for row in grid.grid]
             # Create a copy of the game board for simulation
             temp_game_board = GameBoard(grid.size)
             temp_game_board.grid = temp_grid
-            
+
             # Move & merge
             temp_game_board.move(direction)
             temp_game_board.merge(direction)
-            
+
             # Save the resulting grid in the tree
             child = node.insert_node(temp_game_board.grid, direction)
 

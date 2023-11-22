@@ -2,8 +2,10 @@ import random  # import random for spawning element in the grid
 import curses  # for user input
 import keyboard # for reading keyboard
 import time  # for a delay from a move and another
-#from stack import Stack                 # comment this if u run main.py
-from utilities.stack import Stack      # comment this if u run current file
+from stack import Stack                 # comment this if u run main.py
+#from utilities.stack import Stack      # comment this if u run current file
+from tree import TreeNode                  # comment this if u run main.py
+#from utilities.tree import TreeNode         # comment this if u run current file
 
 class GameBoard:   # class that crete our gred... whill have many methods
     def __init__(self, size): # initialize
@@ -24,18 +26,18 @@ class GameBoard:   # class that crete our gred... whill have many methods
         return empty_cells # return empty_cells  --> "self.empty_cells =  self.initialize_empty_coordinates(self.grid)"
 
 #########################################################################################
-    
+
     def update(self, grid): # method that displays the current state of the game board
         for row in grid: #pass trough each row
             # Use join to add spaces between elements in each row
             row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
-            # {num:5} is because 2048 is 4 digit, maximum possible number in the grid is 1024 and we dont wont the grid to shift 
+            # {num:5} is because 2048 is 4 digit, maximum possible number in the grid is 1024 and we dont wont the grid to shift
             # so we set fix space between numbers
             print(row_str) #print each tiles number with the corrrect and adjusted space btw the others
         print(f"Score: {self.score}") # print the current score
 
 #########################################################################################
-    
+
     def read_user_input(self): # Waits for and reads the user's input for direction or undo.
         # Define the keys for each direction and 'u' for undo
         direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow', 'undo': 'u'}
@@ -44,7 +46,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
                 if keyboard.is_pressed(key): # detect if we pressed the current key
                     self.user_input = direction # save the value pressed inside the variable 'self.user_input'
                     return  # exit the loop
-    
+
 #########################################################################################
 
     def spown_new(self, grid, empty_cells): # method to spawn a new value that can be 2 or 4 in the empty cells
@@ -53,18 +55,18 @@ class GameBoard:   # class that crete our gred... whill have many methods
         weights = [9, 1]  # 90% chance of 2, 10% chance of 4
         # Use random.choices() to select a number based on the defined weights
         number = random.choices(outcomes, weights)[0] # it returns an array, that is why we add [0]
-        empty_cells = self.initialize_empty_coordinates(grid) # track all empty cells (0) and save their cordinates as a set 
+        empty_cells = self.initialize_empty_coordinates(grid) # track all empty cells (0) and save their cordinates as a set
         random_tuple = random.choice(tuple(empty_cells)) # Randomly select a tuple to chose a cordinate where we will put number
         row, column = random_tuple   # Unpack the tuple into separate variables
         empty_cells.remove((row, column)) # delete that cordinate from self.empty_cells
         #print(self.empty_cells)
         grid[row][column] = number # Place the new number in the randomly selected position
-    
+
 #########################################################################################
-  
+
     def move(self, direction, grid):
         '''
-        method to move the tiles in the inputed direction 
+        method to move the tiles in the inputed direction
         utill reached limit of the grid or another number diffrent than 0
         '''
         if direction == 'up': # check direction
@@ -95,14 +97,14 @@ class GameBoard:   # class that crete our gred... whill have many methods
                         break
                     if grid[row][column+1] == 0:
                         grid[row][column], grid[row][column+1] = 0, grid[row][column]
-    
+
 #########################################################################################
-    
+
     def merge(self, direction, grid):
         '''
         method to merge the equel tiles according to the direction inputed
         '''
-        merged_tiles = [[False] * self.size for _ in range(self.size)]  # Initialize a list to track merged tiles     
+        merged_tiles = [[False] * self.size for _ in range(self.size)]  # Initialize a list to track merged tiles
         if direction == 'up':
             for col in range(self.size):
                 for row in range(1, self.size):
@@ -173,7 +175,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
             copied_grid = [row[:] for row in grid] # create copy of the grid
             temp_grid = GameBoard(self.size) # create a gameboard istance
             temp_grid.grid = copied_grid # set the temporary grid equal to the given grid
-            merged_occur = temp_grid.merge(dir, temp_grid.grid) # merge the grid in dir directions 
+            merged_occur = temp_grid.merge(dir, temp_grid.grid) # merge the grid in dir directions
             if merged_occur: # check if at least two tiles was merged
                 return False # there is still a possible move => continume the game
             # if yes return false
@@ -197,11 +199,11 @@ class GameBoard:   # class that crete our gred... whill have many methods
         method that saves the grid status in to a Stak
         It will be used for undo fuction and check for valid moves
         '''
-        copied_grid = [row[:] for row in grid_to_push]  # make a copy of the grid so there is no relation with the game_board   
+        copied_grid = [row[:] for row in grid_to_push]  # make a copy of the grid so there is no relation with the game_board
         self.pastgrids.push(copied_grid, score) # pursh grid and score in to the stack
 
 #########################################################################################
-    
+
     def check_unvilid_move(self):
         '''
         method to check if mive is valid
@@ -235,3 +237,63 @@ class GameBoard:   # class that crete our gred... whill have many methods
 
 #########################################################################################
 
+
+
+
+
+    def create_tree(self, grid, depth):
+        copied_grid = [row[:] for row in grid] # create copy of the grid
+        temp_grid = GameBoard(self.size) # create a gameboard istance
+        temp_grid.grid = copied_grid # set the temporary grid equal to the given grid
+        root = TreeNode(temp_grid.grid)
+
+        directions = ['up', 'down', 'left', 'right']
+        self.explore_tree(root, root.value, directions, depth)
+        return root
+
+    def explore_tree(self, node, grid, directions, depth):
+        if depth == 0:  # base case
+            return
+
+        for direction in directions:
+            # Create a copy of the current grid to simulate the move
+            temp_grid = [row[:] for row in grid]
+            # Create a copy of the game board for simulation
+            temp_game_board = GameBoard(self.size)
+            temp_game_board.grid = temp_grid
+
+            # Move & merge
+            temp_game_board.move(direction, temp_game_board.grid)
+            temp_game_board.merge(direction, temp_game_board.grid)
+
+            temp_game_board.spown_new(temp_game_board.grid, temp_game_board.empty_cells)
+
+            # Save the resulting grid in the tree
+            child = node.insert_node(temp_game_board.grid, direction)
+
+            # Recursively explore the tree
+            self.explore_tree(child, temp_game_board.grid, directions, depth - 1)
+
+
+
+    def print_node_grid(self, child, direction, depth=0): # function that print on terminal the grid
+        """
+        Displays the given grid
+        """
+        spaces = '   ' * depth
+        grid = child.value
+        print(f'{spaces}-------{direction}-------')
+        for row in grid: #pass trough each row
+            # Use join to add spaces between elements in each row
+            row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
+            print(f"{spaces}{row_str}") #print each tiles number with the corrrect and adjusted space btw the others
+        print(f'{spaces}---------------')
+    def print_tree_grids(self, root, depth=0):
+        """
+        Recursively prints the grids in the tree.
+        """
+        if not root:
+            return
+        self.print_node_grid(root, root.direction, depth)
+        for child in root.children:
+            self.print_tree_grids(child, depth+1)

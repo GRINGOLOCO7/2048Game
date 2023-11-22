@@ -1,16 +1,11 @@
 class TreeNode:
-    def __init__(self, value):
+    def __init__(self, value, direction=None):
         self.value = value
+        self.direction = direction
         self.children = []
-        self.level = 0
-        self.parent = None
-        self.direction = None
 
-    def insert_node(self, value, dir):
-        new_node = TreeNode(value)
-        new_node.level = self.level + 1
-        new_node.parent = self
-        new_node.direction = dir
+    def insert_node(self, value, direction):
+        new_node = TreeNode(value, direction)
         self.children.append(new_node)
         return new_node
 
