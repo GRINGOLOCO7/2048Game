@@ -1,23 +1,14 @@
 class TreeNode:
-    def __init__(self, value, direction=None):
+    def __init__(self, value, score, direction=None):
         self.value = value
         self.direction = direction
+        self.score = score
         self.children = []
 
-    def insert_node(self, value, direction):
-        new_node = TreeNode(value, direction)
+    def insert_node(self, value, score, direction):
+        new_node = TreeNode(value, score, direction)
         self.children.append(new_node)
         return new_node
-
-def pretty_print(node, level=0):
-    if not node:
-        return
-
-    spaces = ' ' * 4 * level
-    print(f'{spaces} -> {node.value}')
-
-    for child in node.children:
-        pretty_print(child, level + 1)
 
 #####################################################################################
 

@@ -19,12 +19,7 @@ def GAME(game_board):
 
         #########################################################################################
 
-        # calculate Tree
-        root = game_board.create_tree(game_board.grid, 2)
-        # print tree
-        game_board.print_tree_grids(root)
-
-        #########################################################################################
+        nextGoal = game_board.find_nextGoal(game_board.grid) # calculate the next significant merge
 
         # Main game loop
         while not game_board.is_game_over(game_board.grid, game_board.empty_cells) and not game_board.is_game_won(): # continue untill game over or game win
@@ -78,6 +73,13 @@ def GAME(game_board):
             game_board.empty_cells = game_board.initialize_empty_coordinates(game_board.grid) # find cells with value 0
 
             #####################################################################################
+
+            if game_board.nextGoalReached(game_board.grid, nextGoal): # check if next significant merge occured
+                print('Goal reached')
+            nextGoal = game_board.find_nextGoal(game_board.grid) # calculate the next significant merge
+
+            #####################################################################################
+
             # pause the loop
             time.sleep(0.5)
             print('----------------') # separation from a grid to the other

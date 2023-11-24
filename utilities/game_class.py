@@ -237,63 +237,17 @@ class GameBoard:   # class that crete our gred... whill have many methods
 
 #########################################################################################
 
-
-
-
-
-    def create_tree(self, grid, depth):
-        copied_grid = [row[:] for row in grid] # create copy of the grid
-        temp_grid = GameBoard(self.size) # create a gameboard istance
-        temp_grid.grid = copied_grid # set the temporary grid equal to the given grid
-        root = TreeNode(temp_grid.grid)
-
-        directions = ['up', 'down', 'left', 'right']
-        self.explore_tree(root, root.value, directions, depth)
-        return root
-
-    def explore_tree(self, node, grid, directions, depth):
-        if depth == 0:  # base case
-            return
-
-        for direction in directions:
-            # Create a copy of the current grid to simulate the move
-            temp_grid = [row[:] for row in grid]
-            # Create a copy of the game board for simulation
-            temp_game_board = GameBoard(self.size)
-            temp_game_board.grid = temp_grid
-
-            # Move & merge
-            temp_game_board.move(direction, temp_game_board.grid)
-            temp_game_board.merge(direction, temp_game_board.grid)
-
-            temp_game_board.spown_new(temp_game_board.grid, temp_game_board.empty_cells)
-
-            # Save the resulting grid in the tree
-            child = node.insert_node(temp_game_board.grid, direction)
-
-            # Recursively explore the tree
-            self.explore_tree(child, temp_game_board.grid, directions, depth - 1)
-
-
-
-    def print_node_grid(self, child, direction, depth=0): # function that print on terminal the grid
-        """
-        Displays the given grid
-        """
-        spaces = '   ' * depth
-        grid = child.value
-        print(f'{spaces}-------{direction}-------')
-        for row in grid: #pass trough each row
-            # Use join to add spaces between elements in each row
-            row_str = '   '.join([f'{num:5}' for num in row]) # this is to don't make the grid shif when big numbers arrive
-            print(f"{spaces}{row_str}") #print each tiles number with the corrrect and adjusted space btw the others
-        print(f'{spaces}---------------')
-    def print_tree_grids(self, root, depth=0):
-        """
-        Recursively prints the grids in the tree.
-        """
-        if not root:
-            return
-        self.print_node_grid(root, root.direction, depth)
-        for child in root.children:
-            self.print_tree_grids(child, depth+1)
+    def find_nextGoal(self, grid):
+        max_value_in_grid = float('-inf')
+        for row in range(len(grid)):
+            for column in range(len(grid[row])):
+                if grid[row][column] >  max_value_in_grid:
+                    max_value_in_grid = grid[row][column]
+        nextGoal = max_value_in_grid + max_value_in_grid
+        return nextGoal
+    def nextGoalReached(self, grid, nextGoal):
+        for row in range(len(grid)):
+            for column in range(len(grid[row])):
+                if grid[row][column] ==  nextGoal:
+                    return True
+        return False
