@@ -1,12 +1,12 @@
+import sys
+sys.path.append('2048Game\\utilities')
 import time
-#from game_class import GameBoard                   # comment this if u run main.py
-from utilities.game_class import GameBoard          # comment this if u run current file
-#from create_tree import TreePossibilities          # comment this if u run main.py
-from utilities.create_tree import TreePossibilities # comment this if u run current file
+from colorama import Fore, Style # for fancy print statments
+from game_class import GameBoard
+from tree_class import TreePossibilities
 
 
-
-def GAME(game_board):
+def GAME(game_board, levels_for_tree_suggestion):
         game_board.spown_new(game_board.grid, game_board.empty_cells) # spawn first 2 number to start
         game_board.spown_new(game_board.grid, game_board.empty_cells)
 
@@ -18,14 +18,23 @@ def GAME(game_board):
 
         # calculate the empty cells
         game_board.empty_cells = game_board.initialize_empty_coordinates(game_board.grid) # find cells with value 0
-        
+
         #########################################################################################
 
         # Main game loop
         while not game_board.is_game_over(game_board.grid, game_board.empty_cells) and not game_board.is_game_won(): # continue untill game over or game win
             ### Handle user input and game logic
             #####################################################################################
-            
+
+            # creat tree aff all possibilities and advice best move in order to achive higher score
+            tree = TreePossibilities(game_board.grid)
+            root = tree.create_tree(levels_for_tree_suggestion)
+            listOFadvice = tree.higher_values(root)
+            advice = tree.find_maxscore_in_direction(listOFadvice)
+            print(f"Our approximated suggestion tree advice to move {Fore.GREEN}{Style.BRIGHT}{advice}{Style.RESET_ALL} to achive higer score")
+
+            #####################################################################################
+
             # print the grid to terminal so user can see it
             game_board.update(game_board.grid)
 
@@ -60,19 +69,20 @@ def GAME(game_board):
                 else: #2. past grid is diffrent as current grid -> correct! spown new number
                     # spown new number (2 or 4) in the grid
                     game_board.spown_new(game_board.grid, game_board.empty_cells)
-                
+
                 #################################################################################
 
             else: # user want to undo and go back to previous move
                 print('Move delition...')  # user pressed 'u'
-                game_board.undo() 
-            
+                game_board.undo()
+
             #####################################################################################
 
             # calculate the empty cells
             game_board.empty_cells = game_board.initialize_empty_coordinates(game_board.grid) # find cells with value 0
-            
+
             #####################################################################################
+
             # pause the loop
             time.sleep(0.5)
             print('----------------') # separation from a grid to the other
@@ -91,5 +101,5 @@ def GAME(game_board):
 
 '''
 game_board = GameBoard(4)
-GAME(game_board)
+GAME(game_board, 5)
 '''
