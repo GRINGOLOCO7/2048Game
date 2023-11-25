@@ -48,9 +48,13 @@ def GAME(game_board, levels_for_tree_suggestion):
             invalidMove = False # invalid move set to false
 
             #####################################################################################
-
             # move, merge, check for valid move or undo
-            if game_board.user_input != 'undo': # we want to move
+            if game_board.user_input == 'ranking':
+                game_board.display_ranking()
+
+            #####################################################################################
+            # move, merge, check for valid move or undo
+            elif game_board.user_input != 'undo': # we want to move
 
                 #################################################################################
 
