@@ -6,7 +6,7 @@ import keyboard # for reading keyboard
 import time  # for a delay from a move and another
 from stack import Stack
 from tree import TreeNode
-
+from sort import bubble
 
 class GameBoard:   # class that crete our gred... whill have many methods
     def __init__(self, size): # initialize
@@ -41,7 +41,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
 
     def read_user_input(self): # Waits for and reads the user's input for direction or undo.
         # Define the keys for each direction and 'u' for undo
-        direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow', 'undo': 'u'}
+        direction_keys = {'left': 'left arrow', 'right': 'right arrow', 'up': 'up arrow', 'down': 'down arrow', 'undo': 'u', 'ranking': 'r'}
         while True:  # while we don't get an input nothing will append and we will be stuck in this function
             for direction, key in direction_keys.items(): # Check for key events
                 if keyboard.is_pressed(key): # detect if we pressed the current key
@@ -165,6 +165,40 @@ class GameBoard:   # class that crete our gred... whill have many methods
         flattened_true_values = [value for row in merged_tiles for value in row if value is True]
         return flattened_true_values # will use to see if the game is game over or there stil are possible moves
 
+#########################################################################################                            
+
+    def update_ranking(score):
+
+        file_path = "ranking.txt"
+
+        # Read numbers from the file
+        with open(file_path, 'r') as file:
+            numbers = file.readlines()
+
+        # Convert each line to an integer and sort the list
+        numbers = [int(num.strip()) for num in numbers]
+        numbers.append(score)
+        numbers = bubble(numbers)
+
+        numbers = numbers[:10]
+
+        with open(file_path, 'w') as file:
+            for num in numbers:
+                file.write(f"{num}\n")
+
+#########################################################################################                            
+
+    def display_ranking():
+
+        file_path = "ranking.txt"
+
+        # Read numbers from the file
+        with open(file_path, 'r') as file:
+            numbers = file.readlines()
+
+        numbers = [int(num.strip()) for num in numbers]
+        for i in range(len(numbers)):
+            print(f"{i+1}. {numbers[i]}")
 
 #########################################################################################
 
@@ -181,6 +215,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
                 return False # there is still a possible move => continume the game
             # if yes return false
         print("GAME OVER") # all empty cells are full and there are no more possible move
+        self.update_ranking(self.score)
         return True # return true to end the loop => u lose
 
 #########################################################################################
