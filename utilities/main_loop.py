@@ -6,7 +6,7 @@ from game_class import GameBoard
 from tree_class import TreePossibilities
 
 
-def GAME(game_board):
+def GAME(game_board, levels_for_tree_suggestion):
         game_board.spown_new(game_board.grid, game_board.empty_cells) # spawn first 2 number to start
         game_board.spown_new(game_board.grid, game_board.empty_cells)
 
@@ -28,7 +28,7 @@ def GAME(game_board):
 
             # creat tree aff all possibilities and advice best move in order to achive higher score
             tree = TreePossibilities(game_board.grid)
-            root = tree.create_tree(4) # 4 level deep
+            root = tree.create_tree(levels_for_tree_suggestion)
             listOFadvice = tree.higher_values(root)
             advice = tree.find_maxscore_in_direction(listOFadvice)
             print(f"Our approximated suggestion tree advice to move {Fore.GREEN}{Style.BRIGHT}{advice}{Style.RESET_ALL} to achive higer score")
@@ -101,5 +101,5 @@ def GAME(game_board):
 
 '''
 game_board = GameBoard(4)
-GAME(game_board)
+GAME(game_board, 5)
 '''

@@ -11,7 +11,8 @@ class TreePossibilities:
         self.board_game = GameBoard(self.size) # create a istance from the class game board
         self.board_game.grid = copied_grid # attach to the grid game the copied grid
         self.board_game.empty_cells = self.board_game.initialize_empty_coordinates(self.board_game.grid)  # find the empty celles using game_class method
-        self.board_game.spown_new(self.board_game.grid, self.board_game.empty_cells) # spawn a number in our grid using game_class method
+        if len(self.board_game.empty_cells) != 0:
+            self.board_game.spown_new(self.board_game.grid, self.board_game.empty_cells) # spawn a number in our grid using game_class method
         self.board_game.grid = copied_grid # attach the updated to the grid game the copied grid
 
     def create_tree(self, depth): # method that create a tree with as much levels as depth. each node will have 4 childrens for the 4 possible directions
