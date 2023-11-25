@@ -1,11 +1,12 @@
+import sys
+sys.path.append('2048Game\\utilities')
 import random  # import random for spawning element in the grid
 import curses  # for user input
 import keyboard # for reading keyboard
 import time  # for a delay from a move and another
-from stack import Stack                 # comment this if u run main.py
-#from utilities.stack import Stack      # comment this if u run current file
-from tree import TreeNode                  # comment this if u run main.py
-#from utilities.tree import TreeNode         # comment this if u run current file
+from stack import Stack
+from tree import TreeNode
+
 
 class GameBoard:   # class that crete our gred... whill have many methods
     def __init__(self, size): # initialize

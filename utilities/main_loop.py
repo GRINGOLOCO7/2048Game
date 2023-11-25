@@ -1,7 +1,9 @@
+import sys
+sys.path.append('2048Game\\utilities')
 import time
-from game_class import GameBoard                   # comment this if u run main.py
-#from utilities.game_class import GameBoard          # comment this if u run current file
-
+from colorama import Fore, Style # for fancy print statments
+from game_class import GameBoard
+from tree_class import TreePossibilities
 
 
 def GAME(game_board):
@@ -19,11 +21,18 @@ def GAME(game_board):
 
         #########################################################################################
 
-        nextGoal = game_board.find_nextGoal(game_board.grid) # calculate the next significant merge
-
         # Main game loop
         while not game_board.is_game_over(game_board.grid, game_board.empty_cells) and not game_board.is_game_won(): # continue untill game over or game win
             ### Handle user input and game logic
+            #####################################################################################
+
+            # creat tree aff all possibilities and advice best move in order to achive higher score
+            tree = TreePossibilities(game_board.grid)
+            root = tree.create_tree(4) # 4 level deep
+            listOFadvice = tree.higher_values(root)
+            advice = tree.find_maxscore_in_direction(listOFadvice)
+            print(f"Our approximated suggestion tree advice to move {Fore.GREEN}{Style.BRIGHT}{advice}{Style.RESET_ALL} to achive higer score")
+
             #####################################################################################
 
             # print the grid to terminal so user can see it
@@ -74,12 +83,6 @@ def GAME(game_board):
 
             #####################################################################################
 
-            if game_board.nextGoalReached(game_board.grid, nextGoal): # check if next significant merge occured
-                print('Goal reached')
-            nextGoal = game_board.find_nextGoal(game_board.grid) # calculate the next significant merge
-
-            #####################################################################################
-
             # pause the loop
             time.sleep(0.5)
             print('----------------') # separation from a grid to the other
@@ -96,6 +99,7 @@ def GAME(game_board):
 
 
 
-
+'''
 game_board = GameBoard(4)
 GAME(game_board)
+'''
