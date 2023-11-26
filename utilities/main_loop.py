@@ -48,9 +48,18 @@ def GAME(game_board, levels_for_tree_suggestion):
             invalidMove = False # invalid move set to false
 
             #####################################################################################
-            # move, merge, check for valid move or undo
+            # display ranking is r is pressed
             if game_board.user_input == 'ranking':
                 game_board.display_ranking()
+
+            #####################################################################################
+            # quit if q is pressed
+            if game_board.user_input == 'quit':
+                game_board.update_ranking(game_board.score)
+                game_board.display_ranking()
+                print("You give up")
+                break
+
 
             #####################################################################################
             # move, merge, check for valid move or undo
