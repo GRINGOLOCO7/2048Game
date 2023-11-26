@@ -1,7 +1,7 @@
 import sys
 sys.path.append('2048Game\\utilities')
-from game_class import GameBoard           # comment this if u run main.py
-from tree import TreeNode                  # comment this if u run main.py
+from game_class import GameBoard
+from tree import TreeNode
 
 
 class TreePossibilities:
@@ -25,6 +25,7 @@ class TreePossibilities:
 
 
         return root # return head of the tree
+
     def explore_tree(self, node, directions, depth): # create the childrens of a given node
         if depth == 0:  # base case
             return

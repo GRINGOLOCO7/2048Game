@@ -7,6 +7,8 @@ import time  # for a delay from a move and another
 from stack import Stack
 from tree import TreeNode
 from sort import QuickSort
+from colorama import Fore, Style
+
 
 class GameBoard:   # class that crete our gred... whill have many methods
     def __init__(self, size): # initialize
@@ -188,7 +190,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
 
 #########################################################################################
 
-    def display_ranking(self):
+    def display_ranking(self,score):
 
         file_path = "2048Game\\utilities\\ranking.txt"
 
@@ -198,7 +200,10 @@ class GameBoard:   # class that crete our gred... whill have many methods
 
         numbers = [int(num.strip()) for num in numbers]
         for i in range(len(numbers)):
-            print(f"{i+1}. {numbers[i]}")
+            if numbers[i] == score:
+                print(f"{i+1}. {Fore.BLUE}{Style.BRIGHT}{numbers[i]}{Style.RESET_ALL}")
+            else:
+                print(f"{i+1}. {numbers[i]}")
 
 #########################################################################################
 
@@ -216,7 +221,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
             # if yes return false
         print("GAME OVER") # all empty cells are full and there are no more possible move
         self.update_ranking(self.score)
-        self.display_ranking()
+        self.display_ranking(self.score)
         return True # return true to end the loop => u lose
 
 #########################################################################################
