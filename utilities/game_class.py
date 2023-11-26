@@ -165,11 +165,11 @@ class GameBoard:   # class that crete our gred... whill have many methods
         flattened_true_values = [value for row in merged_tiles for value in row if value is True]
         return flattened_true_values # will use to see if the game is game over or there stil are possible moves
 
-#########################################################################################                            
+#########################################################################################
 
-    def update_ranking(score):
+    def update_ranking(self, score):
 
-        file_path = "ranking.txt"
+        file_path = "2048Game\\utilities\\ranking.txt"
 
         # Read numbers from the file
         with open(file_path, 'r') as file:
@@ -186,11 +186,11 @@ class GameBoard:   # class that crete our gred... whill have many methods
             for num in numbers:
                 file.write(f"{num}\n")
 
-#########################################################################################                            
+#########################################################################################
 
-    def display_ranking():
+    def display_ranking(self):
 
-        file_path = "ranking.txt"
+        file_path = "2048Game\\utilities\\ranking.txt"
 
         # Read numbers from the file
         with open(file_path, 'r') as file:
@@ -272,18 +272,3 @@ class GameBoard:   # class that crete our gred... whill have many methods
             self.score = tuple_past[1] # set score as last score
 
 #########################################################################################
-
-    def find_nextGoal(self, grid):
-        max_value_in_grid = float('-inf')
-        for row in range(len(grid)):
-            for column in range(len(grid[row])):
-                if grid[row][column] >  max_value_in_grid:
-                    max_value_in_grid = grid[row][column]
-        nextGoal = max_value_in_grid + max_value_in_grid
-        return nextGoal
-    def nextGoalReached(self, grid, nextGoal):
-        for row in range(len(grid)):
-            for column in range(len(grid[row])):
-                if grid[row][column] ==  nextGoal:
-                    return True
-        return False
