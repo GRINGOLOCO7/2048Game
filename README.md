@@ -25,6 +25,8 @@ The 2048 Game project is a Python implementation of the popular 2048 puzzle game
 - **Past Grid Tracking**: Keep track of the previous grid states using a stack.
 - **Score Tracking**: Each move the score get updated
 - **Game Over and Victory Detection**: Detect when the game is over or when the player wins.
+- **Ranking System**: Maintaining a ranking of high scores.
+- **Tree-Based Move Suggestions**: Provides suggestions for optimal movees using a tree structure. 
 
 ## Data Structures Used
 
@@ -32,16 +34,24 @@ The 2048 Game project is a Python implementation of the popular 2048 puzzle game
 - **Stack** (linked list-based): Storing past grid states.
 - **Dictionary**: Managing key game features.
 - **Set**: Use a set to keep track of empty celleces (tiles with value 0)
+- **Tree**: Used in the tree-based move suggestion system.
 
 ## Algorithms
 
 - **Merge Algorithm**: Sum two cells adjacent in the same direction of movement.
 - **Random Number Generator Algorithm**: Generate random numbers in the grid.
 - **Move Algorithm**: Move the grid in the specified direction.
+- **Sorting Algorithms (QuickSort and Bubble Sort)**: Used in ranking system to sort the high scores.
 
 ## Code Structure Explanation
 
 The code is organized into several components to enhance readability and maintainability.
+main.py: The entry point of the game. It initializes the GameBoard and runs the main game loop.
+src folder: Contains various modules and classes:
+game_class.py: Contains the GameBoard class with methods for game mechanics.
+stack.py: Implements the Stack class for undo functionality.
+tree_class.py: Defines the TreePossibilities class for move suggestions.
+
 
 ### `GameBoard` Class
 
@@ -80,6 +90,19 @@ The `Stack` class is a **linked list-based** implementation of a stack, used to 
 - **`push(self, item, score)`**: Adds a grid and his related score to the top of the stack.
 
 - **`pop(self)`**: Removes and returns the grid and score from the top of the stack.
+
+### TreePossibilities Class
+- Generates a tree of possible moves.
+- Analyzes potential outcomes for optimal move suggestions.
+
+### Ranking System 
+- Tracks high scores.
+- Sorts scores using QuickSort and Bubble Sort.
+- Top scores are stored and displayed to the user.
+
+### Tree-Based Move Suggestion
+- Provides the best move suggestions based on tree analysis.
+- Considerts future outcomes and scores for optimal move strategy.
 
 ### Main Game Loop
 
@@ -132,3 +155,6 @@ This modular structure allows for easy understanding, testing, and potential fut
 
 4. **Game Controls:**
     - Use arrow keys (up, down, left, right) to move tiles on the board.
+    - 'u' to undo
+    - 'r' to view ranking
+    - 'q' to quit
