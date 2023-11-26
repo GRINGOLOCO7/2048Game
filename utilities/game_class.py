@@ -6,7 +6,7 @@ import keyboard # for reading keyboard
 import time  # for a delay from a move and another
 from stack import Stack
 from tree import TreeNode
-from sort import bubble
+from sort import QuickSort
 
 class GameBoard:   # class that crete our gred... whill have many methods
     def __init__(self, size): # initialize
@@ -178,7 +178,7 @@ class GameBoard:   # class that crete our gred... whill have many methods
         # Convert each line to an integer and sort the list
         numbers = [int(num.strip()) for num in numbers]
         numbers.append(score)
-        numbers = bubble(numbers)
+        numbers = QuickSort(numbers)
 
         numbers = numbers[:10]
 
