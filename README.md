@@ -45,13 +45,16 @@ The 2048 Game project is a Python implementation of the popular 2048 puzzle game
 
 ## Code Structure Explanation
 
-The code is organized into several components to enhance readability and maintainability.
-main.py: The entry point of the game. It initializes the GameBoard and runs the main game loop.
-src folder: Contains various modules and classes:
-game_class.py: Contains the GameBoard class with methods for game mechanics.
-stack.py: Implements the Stack class for undo functionality.
-tree_class.py: Defines the TreePossibilities class for move suggestions.
-tree.py: Implements a tree with an array of children
+The code is organized into several components to enhance readability and maintainability:
+
+- **`main.py`**: The entry point of the game. It initializes the `GameBoard` and runs the main game loop.
+
+- **`src` folder**: Contains various modules and classes:
+  - **`game_class.py`**: Contains the `GameBoard` class with methods for game mechanics.
+  - **`stack.py`**: Implements the `Stack` class for undo functionality.
+  - **`tree_class.py`**: Defines the `TreePossibilities` class for move suggestions.
+  - **`tree.py`**: Implements a tree with an array of children.
+
 
 
 ### `GameBoard` Class
