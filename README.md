@@ -24,6 +24,7 @@ The 2048 Game project is a Python implementation of the popular 2048 puzzle game
 - **Random Number Generator**: Spawn new tiles with random values.
 - **Past Grid Tracking**: Keep track of the previous grid states using a stack.
 - **Score Tracking**: Each move the score get updated
+- **Undo Function**: Allows players to revert to the previous grid state, facilitating strategic moves and error correction.
 - **Game Over and Victory Detection**: Detect when the game is over or when the player wins.
 - **Ranking System**: Maintaining a ranking of 10 most high scores.
 - **Tree-Based Move Suggestions**: Provides approximate suggestions for optimal moves using a tree structure.
