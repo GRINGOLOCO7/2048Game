@@ -58,7 +58,7 @@ tree.py: Implements a tree with an array of children
 
 The `GameBoard` class is the core of the game logic and user interaction. It contains the following methods:
 
-- **`__init__(self, size)`**: Initializes the game board with a specified size and sets up the initial grid with empty cells.
+- **`__init__(self, size)`**: Initializes the game board with a specified size ( 4 x 4 ) and sets up the initial grid with empty cells.
 
 - **`initialize_empty_coordinates`**: Go troght all the grid as save the empty spaces in a set()
    - Time Complexity: O(n^2) - where n is the size of the grid. This method iterates through each cell of the grid.
