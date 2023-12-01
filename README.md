@@ -89,7 +89,7 @@ The `GameBoard` class is the core of the game logic and user interaction. It con
     - Time Complexity: O(n^2) - due to traversing and merging tiles in the grid.
 
 
-- **`is_game_over(self)`**: This function checks if the game is over by examining empty cells and attempting to merge tiles in all directions. If no empty cells exist and no merges are possible.
+- **`is_game_over(self)`**: This function checks if the game is over by examining empty cells and attempting to merge tiles in all directions. If no empty cells exist and no merges are possible it is game over.
   - Time Complexity: O(n^2) - checks each cell of the grid.
 
 
