@@ -22,8 +22,8 @@ The 2048 Game project is a Python implementation of the popular 2048 puzzle game
 - **Merge Functionality**: Merge tiles with the same value when moving in a specific direction.
 - **Random Number Generator**: Spawn new tiles with random values.
 - **Past Grid Tracking**: Keep track of the previous grid states using a stack.
-- **Score Tracking**: Each move the score get updated
 - **Undo Function**: Allows players to revert to the previous grid state, facilitating strategic moves and error correction.
+- **Score Tracking**: Each move the score get updated
 - **Game Over and Victory Detection**: Detect when the game is over or when the player wins. And also **Quit** possibility
 - **Ranking System**: Maintaining a ranking of 10 most high scores.
 - **Tree-Based Move Suggestions**: Provides approximate suggestions for optimal moves using a tree structure.
@@ -49,17 +49,25 @@ The code is organized into several components to enhance readability and maintai
 
 - **`main.py`**: The entry point of the game. It initializes the `GameBoard` and runs the main game loop.
 
-- **`src` folder**: Contains various modules and classes:
-  
-  - _game_class.py_: Contains the GameBoard class with methods for game mechanics.
+- **`utilities` folder**: Contains various modules and classes:
 
-  - _stack.py_: Implements the Stack class for undo functionality.
+  - `_game_class.py:_` Contains the GameBoard class with methods for game mechanics.
 
-  - _tree_class.py_: Defines the TreePossibilities class for move suggestions.
+  - `_tree_class.py:_` Defines the TreePossibilities class for move suggestions.
 
-  - _tree.py:_ Implements a tree with an array of children
+  - `_main_loop.py:_` Import _tree class_ and the _board game class_ to create a function called GAME that put all method in order for playng.
 
+  - `_stack.py:_` Implements the Stack class for undo functionality.
 
+  - `_tree.py:_` Implements a tree with an array of children
+
+  - `_sort.py:_` Inside the fucntion of Quik Sort for the ranking outcome.
+
+  - `_ranking.txt:_` File with the 10 best scores
+
+<br>
+<br>
+<br>
 
 ### `GameBoard` Class
 
@@ -67,7 +75,7 @@ The `GameBoard` class is the core of the game logic and user interaction. It con
 
 - **`__init__(self, size)`**: Initializes the game board with a specified size (4 x 4) and sets up the initial grid with empty cells. It also initializes `self.pastgrids` as a `Stack` instance to keep track of past grid states and `self.score` to track the player's score.
 
-- **`initialize_empty_coordinates`**: Go troght all the grid as save the empty spaces in a set()
+- **`initialize_empty_coordinates`**: Go troght all the grid and save the empty celles _(celles containing 0)_ in a set()
    - Time Complexity: O(n^2) - where n is the size of the grid. This method iterates through each cell of the grid.
 
 
@@ -104,15 +112,37 @@ The `GameBoard` class is the core of the game logic and user interaction. It con
   - Time Complexity: O(n^2) - iterates through the grid to find the 2048 tile.
 
 
-- **`past_grids(self, grid_to_push)`**: Pushes a copy of the current grid onto the `pastgrids` stack, allowing for undo functionality.
+- **`past_grids(self, grid_to_push)`**: Pushes a copy of the current grid onto the `pastgrids` stack, allowing for undo functionality and check for invalid move.
 
-- **`check_invalid_move(self)`**: Checks if the current move is invalid. Restores the grid to the previous state if the move is invalid. An invalid move a a move where to tiles are muved.
+- **`check_invalid_move(self)`**: Checks if the current move is invalid. Restores the grid to the previous state if the move is invalid. An invalid move a a move where to tiles are un-muved.
 
 - **`undo(self)`**: Pop form the `pastgrids` Stack the previous state of the grid and restore it. It allow to go back to the previous move.
   - Time Complexity: O(1) - Stack pop operation is constant time.
 
+<br>
 
-- **`GAME(self)`**: **Main methiod** that loop until game is won or game is lost. It combine in the correct order all the previous methosds, showing the game to the user. 
+### `TreePossibilities` Class
+
+The `TreePossibilities` class is responsible for generating a tree structure that represents an approximation of the possible future game states. It helps in suggesting the best move based on potential outcomes. The class includes the following methods:
+
+- **`create_tree(self, depth)`**: Generates a tree of potential game states up to a specified depth. Each node represents a game state, and the tree branches represent possible moves from that state. For each node/parents there are 4 childrens: Due to the 4 possible move. In each of them a random number is spown to simulate a possible outcome of the **`spawn_new`** function
+     - Time Complexity:
+        - Worst Case: Exponential, based on the depth and branching factor of the game states. The number of nodes grows exponentially with the depth of the tree.
+
+
+- **`higher_values(self, root)`**: Traverses the tree starting from the 4 chidren of the root and identifies direction form root that lead to higher game scores. It evaluates different paths to suggest the most promising move.
+  - Time Complexity:
+    - Worst/Average Case: O(n) - where n is the number of nodes in the tree. The method traverses each node once.
+- **`find_maxscore_in_direction(self, listOFadvice)`**: Analyzes the list of advised moves and their potential scores to determine the best possible move.
+  - Time Complexity:
+    - Worst/Average Case: O(m) - where m is the length of the `listOFadvice`. The method iterates through each advised move to find the best one.
+
+<br>
+
+### `main_loop.py` file
+- Contain **`GAME(self)`** function: **Main methiod** that loop until game is won or game is lost or user press 'q'. It combine in the correct order all the previous methosds, showing the game to the user.
+
+<br>
 
 ### `Stack` Class
 
@@ -125,27 +155,14 @@ The `Stack` class is a **linked list-based** implementation of a stack, used to 
 - **`pop(self)`**: Removes and returns the grid and score from the top of the stack.
   - Time Complexity: O(1) - Removing an item from the top of the stack is a constant time operation.
 
+<br>
 
-### `TreePossibilities` Class
-
-The `TreePossibilities` class is responsible for generating a tree structure that represents an approximation of the possible future game states. It helps in suggesting the best move based on potential outcomes. The class includes the following methods:
-
-- **`create_tree(self, depth)`**: Generates a tree of potential game states up to a specified depth. Each node represents a game state, and the tree branches represent possible moves from that state. For each node/parents there are 4 childrens: Due to the 4 possible move. In each of them a random number is spown to simulate a possible outcome of the **`spawn_new`** function
-     - Time Complexity: 
-        - Worst Case: Exponential, based on the depth and branching factor of the game states. The number of nodes grows exponentially with the depth of the tree.
+### `Tree` Class
+- Create a tree with an array of childrens
+- allow to add a new node containig a value (that for us will be a grid status) and his respective score
 
 
-- **`higher_values(self, root)`**: Traverses the tree starting from the 4 chidren of the root and identifies direction form root that lead to higher game scores. It evaluates different paths to suggest the most promising move.
-  - Time Complexity: 
-    - Worst/Average Case: O(n) - where n is the number of nodes in the tree. The method traverses each node once.
-- **`find_maxscore_in_direction(self, listOFadvice)`**: Analyzes the list of advised moves and their potential scores to determine the best possible move.
-  - Time Complexity: 
-    - Worst/Average Case: O(m) - where m is the length of the `listOFadvice`. The method iterates through each advised move to find the best one.
-
-
-
-
-### Ranking System 
+### Ranking System
 - Tracks high scores.
 - Sorts scores using QuickSort and Bubble Sort.
 - Top scores are stored and displayed to the user.
@@ -163,21 +180,21 @@ The main game loop handles the overall flow of the game. It includes the followi
 2. **Main Loop Execution**: Afther calling **`GAME`** function: Continuously loop while the game is not over or the player has not won or the player press 'q'.
 
     - **Update**: Print the current state of the game grid.
-    
+
     - **Save Past Grid**: Push a copy of the current grid onto the `pastgrids` stack.
-    
+
     - **Read User Input**: Wait for and process the user's arrow key input.
-    
+
     - **Move & Merge**: Execute the move and merge logic based on the user's input.
 
     - **Undo**: If 'u' is pressed it restore the grid to his previous status.
 
     - **Check Invalid Move**: Verify if the move is invalid (undo). If invalid, restore the grid to the previous state.
-    
+
     - **Spawn New Number**: Generate a new random number on the grid.
-    
+
     - **Print and Pause**: Print the updated grid and pause for a short duration for better visibility.
-    
+
 3. **Game Over or Victory**: When the loop exits, print the final state of the game grid and indicate whether the player won or the game is over.
 
 This modular structure allows for easy understanding, testing, and potential future enhancements of the 2048 game implementation.
