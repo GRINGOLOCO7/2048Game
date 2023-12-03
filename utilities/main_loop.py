@@ -4,6 +4,7 @@ import time
 from colorama import Fore, Style # for fancy print statments
 from game_class import GameBoard
 from tree_class import TreePossibilities
+import copy
 
 
 def GAME(game_board, levels_for_tree_suggestion):
@@ -27,10 +28,26 @@ def GAME(game_board, levels_for_tree_suggestion):
             #####################################################################################
 
             # creat tree aff all possibilities and advice best move in order to achive higher score
+            advice = None
             tree = TreePossibilities(game_board.grid)
             root = tree.create_tree(levels_for_tree_suggestion)
             listOFadvice = tree.higher_values(root)
-            advice = tree.find_maxscore_in_direction(listOFadvice)
+            print(f"list of advice: {listOFadvice}")
+            copied_grid = [row[:] for row in game_board.grid]
+            temp_board = GameBoard(game_board.size)
+            temp_board.grid = copy.deepcopy(copied_grid)
+            while not advice:
+                advice = tree.find_maxscore_in_direction(listOFadvice)
+                temp_board.move(advice, temp_board.grid)
+                temp_board.merge(advice, temp_board.grid)
+                print(f"temp board: {temp_board.grid}, copied grid: {copied_grid}")
+                if temp_board.grid == copied_grid:
+                    listOFadvice = [tup for tup in listOFadvice if tup[0] != advice]
+                    advice = None
+                    #print(f"list of advice: {listOFadvice}")
+                    if not listOFadvice:
+                        advice = 'I think you lost...'
+
             print(f"Our approximated suggestion tree advice to move {Fore.GREEN}{Style.BRIGHT}{advice}{Style.RESET_ALL} to achive higer score")
 
             #####################################################################################
