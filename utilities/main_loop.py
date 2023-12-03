@@ -77,7 +77,8 @@ def GAME(game_board, levels_for_tree_suggestion):
 
                 # check for fake move:
                 # 1. if past grid is the same as the move after the canges (True), we don't spown new number
-                if game_board.check_unvilid_move():
+                if game_board.check_unvilid_move(game_board.user_input):
+                    print("No space for this move... try another direction")
                     invalidMove = True
                 else: #2. past grid is diffrent as current grid -> correct! spown new number
                     # spown new number (2 or 4) in the grid

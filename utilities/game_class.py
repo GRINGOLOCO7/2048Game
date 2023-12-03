@@ -246,15 +246,20 @@ class GameBoard:   # class that crete our gred... whill have many methods
 
 #########################################################################################
 
-    def check_unvilid_move(self):
+    def check_unvilid_move(self, input):
         '''
         method to check if mive is valid
         it means that if no tiles can move in that direction th emove is not allowed
         '''
+        if input == 'ranking':
+            return False
+        if not self.pastgrids:
+            # Handle the case when the stack is empty
+            return False
         past__grid, score = self.pastgrids.pop() # pop last status of the grid
         if past__grid == self.grid: # if the last status of the grid is the same as current we have a faul move... we dont allow it
-            print("No space for this move... try another direction")
-            self.past_grids(past__grid, score) # add again the popped value
+            #print("No space for this move... try another direction")
+            self.past_grids(past__grid, score) # add again the popped tuple
             return True
         self.past_grids(past__grid, score) # add again the popped value
         return False
