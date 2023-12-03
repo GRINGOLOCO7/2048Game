@@ -161,6 +161,8 @@ The `Stack` class is a **linked list-based** implementation of a stack, used to 
 - Create a tree with an array of childrens
 - allow to add a new node containig a value (that for us will be a grid status) and his respective score
 
+<br>
+<br>
 
 ### Ranking System
 - Tracks high scores.

@@ -51,10 +51,11 @@ def GAME(game_board, levels_for_tree_suggestion):
             # display ranking is r is pressed
             if game_board.user_input == 'ranking':
                 game_board.display_ranking(game_board.score)
+                invalidMove = True # so we dont store two consecutive same grids
 
             #####################################################################################
             # quit if q is pressed
-            if game_board.user_input == 'quit':
+            elif game_board.user_input == 'quit':
                 game_board.update_ranking(game_board.score)
                 game_board.display_ranking(game_board.score)
                 print("You give up")
