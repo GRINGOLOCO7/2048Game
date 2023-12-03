@@ -32,7 +32,7 @@ def GAME(game_board, levels_for_tree_suggestion):
             tree = TreePossibilities(game_board.grid)
             root = tree.create_tree(levels_for_tree_suggestion)
             listOFadvice = tree.higher_values(root)
-            print(f"list of advice: {listOFadvice}")
+            #print(f"list of advice: {listOFadvice}")
             copied_grid = [row[:] for row in game_board.grid]
             temp_board = GameBoard(game_board.size)
             temp_board.grid = copy.deepcopy(copied_grid)
@@ -40,7 +40,7 @@ def GAME(game_board, levels_for_tree_suggestion):
                 advice = tree.find_maxscore_in_direction(listOFadvice)
                 temp_board.move(advice, temp_board.grid)
                 temp_board.merge(advice, temp_board.grid)
-                print(f"temp board: {temp_board.grid}, copied grid: {copied_grid}")
+                #print(f"temp board: {temp_board.grid}, copied grid: {copied_grid}")
                 if temp_board.grid == copied_grid:
                     listOFadvice = [tup for tup in listOFadvice if tup[0] != advice]
                     advice = None
