@@ -10,8 +10,7 @@ This project implements the classic 2048 board game for the final project of the
 - [Algorithms](#algorithms)
 - [Code Structure Explanation](#code-structure-explanation)
 - [How to Use](#how-to-use)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Introduction
 
@@ -66,7 +65,7 @@ The code is organized into several components to enhance readability and maintai
 
 The `GameBoard` class is the core of the game logic and user interaction. It contains the following methods:
 
-- **`__init__(self, size)`**: Initializes the game board with a specified size ( 4 x 4 ) and sets up the initial grid with empty cells.
+- **`__init__(self, size)`**: Initializes the game board with a specified size (4 x 4) and sets up the initial grid with empty cells. It also initializes `self.pastgrids` as a `Stack` instance to keep track of past grid states and `self.score` to track the player's score.
 
 - **`initialize_empty_coordinates`**: Go troght all the grid as save the empty spaces in a set()
    - Time Complexity: O(n^2) - where n is the size of the grid. This method iterates through each cell of the grid.
@@ -75,7 +74,15 @@ The `GameBoard` class is the core of the game logic and user interaction. It con
 - **`update(self)`**: Prints the current state of the game grid to the terminal.
   - Time Complexity: O(n^2) - as it iterates through each cell for printing.
 
-- **`read_user_input(self)`**: Listens for keyboard inputs using the `keyboard` library to determine the user's desired move direction, or actions.
+- **`read_user_input(self)`**: Listens for keyboard inputs using the `keyboard` library. It determines the user's desired move direction or action based on the following keys:
+  - `'left arrow'`: Move tiles left.
+  - `'right arrow'`: Move tiles right.
+  - `'up arrow'`: Move tiles up.
+  - `'down arrow'`: Move tiles down.
+  - `'u'`: Undo the last move.
+  - `'r'`: Display the ranking.
+  - `'q'`: Quit the game.
+
 
 - **`spawn_new(self)`**: Generates a new random number (2 (90%) or 4 (10%)) in an empty cell on the grid.
   - Time Complexity: O(1) - Random generation and placement.
