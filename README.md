@@ -1,5 +1,7 @@
 # 2048 Game
 
+![cover](assets/cover.png)
+
 This project implements the classic 2048 board game for the final project of the Algorithm and Data Structure course.
 
 ## Table of Contents
